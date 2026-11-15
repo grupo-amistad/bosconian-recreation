@@ -1,0 +1,13 @@
+{
+    "title": "MISO - Ejercicio 04",
+    "size": {
+        "w": 960,
+        "h": 540
+    },
+    "bg_color": {
+        "r": 25,
+        "g": 25,
+        "b": 25
+    },
+    "framerate": 60
+}

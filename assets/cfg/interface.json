@@ -1,0 +1,18 @@
+{
+    "font": "fnt/PressStart2P.ttf",
+    "size": 14,
+    "title": "EJERCICIO 04",
+    "instructions": "Flechas: mover | Click: disparar | P: pausa | SPACE: defensa",
+    "pause_text": "",
+    "special_label": "ESPECIAL",
+    "title_color": [255, 255, 255],
+    "instructions_color": [255, 235, 0],
+    "pause_color": [255, 220, 80],
+    "special_color": [255, 255, 255],
+    "special_status_color": [0, 255, 0],
+    "title_position": [48, 24],
+    "instructions_position": [48, 60],
+    "pause_position": [350, 260],
+    "special_position": [48, 445],
+    "special_status_position": [48, 470]
+}

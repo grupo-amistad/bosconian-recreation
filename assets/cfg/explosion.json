@@ -1,0 +1,15 @@
+{
+    "image": "assets/img/explosion.png",
+    "sound": "assets/snd/explosion.ogg",
+    "animations": {
+        "number_frames": 4,
+        "list": [
+            {
+                "name": "EXPLODE",
+                "start": 0,
+                "end": 3,
+                "framerate": 16
+            }
+        ]
+    }
+}
