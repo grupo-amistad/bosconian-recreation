@@ -40,4 +40,4 @@ La división, los contratos entre módulos y el cronograma de seis semanas está
 
 ## Flujo de Git
 
-Trabajen en ramas `feature/<tema>` y abran Pull Requests hacia `develop`. Integren cambios al menos una vez por semana y mantengan `main` para entregas estables. Revisen [`docs/arquitectura.md`](docs/arquitectura.md) antes de modificar componentes compartidos.
+Revisen [`docs/arquitectura.md`](docs/arquitectura.md) antes de modificar componentes compartidos.
