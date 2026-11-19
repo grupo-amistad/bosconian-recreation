@@ -1,13 +1,13 @@
 {
-    "title": "MISO - Ejercicio 04",
+    "title": "Bosconian Recreation",
     "size": {
-        "w": 960,
-        "h": 540
+        "w": 256,
+        "h": 208
     },
     "bg_color": {
-        "r": 25,
-        "g": 25,
-        "b": 25
+        "r": 0,
+        "g": 0,
+        "b": 0
     },
     "framerate": 60
 }

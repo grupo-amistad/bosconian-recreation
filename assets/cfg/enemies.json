@@ -2,35 +2,35 @@
     "AsteroidA": {
         "image": "assets/img/asteroid_01.png",
         "sound": "assets/snd/asteroid.ogg",
-        "size": {"x": 48, "y": 48},
-        "velocity_min": 25,
-        "velocity_max": 50
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 8,
+        "velocity_max": 15
     },
     "AsteroidB": {
         "image": "assets/img/asteroid_02.png",
         "sound": "assets/snd/asteroid.ogg",
-        "size": {"x": 48, "y": 48},
-        "velocity_min": 50,
-        "velocity_max": 75
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 15,
+        "velocity_max": 23
     },
     "AsteroidC": {
         "image": "assets/img/asteroid_03.png",
         "sound": "assets/snd/asteroid.ogg",
-        "size": {"x": 48, "y": 48},
-        "velocity_min": 75,
-        "velocity_max": 100
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 23,
+        "velocity_max": 30
     },
     "AsteroidD": {
         "image": "assets/img/asteroid_04.png",
         "sound": "assets/snd/asteroid.ogg",
-        "size": {"x": 48, "y": 48},
-        "velocity_min": 100,
-        "velocity_max": 125
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 30,
+        "velocity_max": 38
     },
     "Hunter": {
         "image": "assets/img/enemy.png",
         "sound_chase": "assets/snd/ufo.ogg",
-        "size": {"x": 48, "y": 48},
+        "size": {"x": 16, "y": 16},
         "animations": {
             "number_frames": 6,
             "list": [
@@ -48,9 +48,9 @@
                 }
             ]
         },
-        "velocity_chase": 75,
-        "velocity_return": 100,
-        "distance_start_chase": 180,
-        "distance_start_return": 200
+        "velocity_chase": 23,
+        "velocity_return": 30,
+        "distance_start_chase": 48,
+        "distance_start_return": 53
     }
 }

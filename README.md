@@ -20,17 +20,17 @@ python main.py
 
 La estructura inicial parte del videojuego de la entrega 4 del curso: conserva el ciclo principal, el mundo de Esper, componentes y sistemas ECS, fábricas de entidades, configuración JSON y servicios para cargar recursos. También conserva sus sprites, fuente y sonidos como recursos de prototipo. El juego de esa entrega es una referencia técnica; sus mecánicas todavía deben evolucionar para cumplir los requisitos de Bosconian.
 
-La ventana y las configuraciones iniciales aún reflejan el prototipo anterior. Ajustar la resolución a 256 × 208, definir el mundo con wraparound y crear las escenas y mecánicas de Bosconian forman parte del trabajo planificado.
+La ventana base usa la resolución total de **256 × 208 píxeles**. El primer archivo de nivel está en `assets/cfg/levels/level_01.json`; los demás niveles deben seguir el contrato de [`docs/configuracion-de-niveles.md`](docs/configuracion-de-niveles.md). La jugabilidad y los assets del prototipo de la entrega anterior todavía se están reemplazando por los de Bosconian.
 
 ## Estructura
 
 - `main.py`: punto de entrada.
-- `src/engine/`: ciclo de juego e inicialización.
+- `src/engine/`: ciclo de juego, contrato de escenas y Scene Manager.
 - `src/ecs/components/`: datos de las entidades.
 - `src/ecs/systems/`: lógica ejecutada por el ciclo principal.
 - `src/create/`: fábricas de entidades y prefabs.
 - `src/services/`: acceso centralizado a configuración y recursos.
-- `assets/cfg/`: configuración JSON del prototipo.
+- `assets/cfg/`: configuración JSON global y de niveles.
 - `assets/img/`, `fnt/`, `snd/`: recursos heredados de la entrega 4.
 - `docs/`: contratos de arquitectura, reparto de trabajo y cronograma.
 
