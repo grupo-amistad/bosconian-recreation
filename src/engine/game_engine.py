@@ -30,6 +30,8 @@ from src.ecs.systems.s_text import system_text_rendering
 from src.ecs.components.c_text import CText
 from src.ecs.components.c_special_ability import CSpecialAbility
 from src.services import ServiceLocator
+from src.engine.gameplay_scene import GameplayScene
+from src.engine.scene_manager import SceneManager
 
 class GameEngine:
     def __init__(self) -> None:
@@ -53,6 +55,7 @@ class GameEngine:
         self.events: list[pygame.event.Event] = []
         self.paused = False
         self.ui_entities: dict[str, int] = {}
+        self.scene_manager = SceneManager()
 
         # Original framerate = 0
         # Original bg_color (0, 200, 128)
@@ -65,17 +68,19 @@ class GameEngine:
 
     async def run(self) -> None:
         self._create()
+        self.scene_manager.start(GameplayScene(self))
         self.is_running = True
         while self.is_running:
             self._calculate_time()
             self._process_events()
-            self._update()
-            self._draw()
+            self.scene_manager.update(self.delta_time)
+            self.scene_manager.draw(self.screen)
+            pygame.display.flip()
             await asyncio.sleep(0)
         self._clean()
 
     def _create(self):
-        level_config = self._load_config_file("assets/cfg/level_01.json")
+        level_config = self._load_config_file("assets/cfg/levels/level_01.json")
         enemies_config = self._load_config_file("assets/cfg/enemies.json")
         player_config = self._load_config_file("assets/cfg/player.json")
         bullet_config = self._load_config_file("assets/cfg/bullet.json")
@@ -164,8 +169,8 @@ class GameEngine:
         for event in self.events:
             if event.type == pygame.QUIT:
                 self.is_running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-                self.paused = not self.paused
+            else:
+                self.scene_manager.handle_event(event)
 
     def _update(self):
         system_input(self.ecs_world, self.events)
@@ -199,14 +204,15 @@ class GameEngine:
         # Purge them before rendering so destroyed enemies/effects vanish.
         self.ecs_world.process()
 
-    def _draw(self):
-        self.screen.fill(self.bg_color)
-        pygame.draw.rect(self.screen, pygame.Color(180, 180, 180), self.screen.get_rect(), 1)
-        system_rendering(self.ecs_world, self.screen)
-        system_text_rendering(self.ecs_world, self.screen)
-        pygame.display.flip()
+    def _draw(self, target=None):
+        target = target or self.screen
+        target.fill(self.bg_color)
+        pygame.draw.rect(target, pygame.Color(180, 180, 180), target.get_rect(), 1)
+        system_rendering(self.ecs_world, target)
+        system_text_rendering(self.ecs_world, target)
 
     def _clean(self):
+        self.scene_manager.close()
         pygame.quit()
 
     

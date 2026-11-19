@@ -1,6 +1,7 @@
 import esper
 import pygame
 from src.ecs.components.c_surface import CSurface
+from src.ecs.components.c_hitbox import CHitBox
 from src.ecs.components.c_tag_bullet import CTagBullet
 from src.ecs.components.c_tag_enemy import CTagEnemy
 from src.ecs.components.c_tag_player import CTagPlayer
@@ -14,8 +15,8 @@ from src.ecs.components.c_explosion_lifetime import CExplosionLifetime
 from src.services import ServiceLocator
 
 
-def _rect(transform, surface):
-    return pygame.Rect(round(transform.pos.x), round(transform.pos.y), *surface.size)
+def _rect(transform, hitbox):
+    return hitbox.rect_at(transform.pos)
 
 
 def _explode(world, position, config=None):
@@ -24,7 +25,7 @@ def _explode(world, position, config=None):
     if image:
         from pathlib import Path
         image = image
-    surf = CSurface(image=image, size=pygame.Vector2(24, 24), color=pygame.Color("orange"))
+    surf = CSurface(image=image, size=pygame.Vector2(8, 8), color=pygame.Color("orange"))
     animation_config = config.get("animations", {})
     frames = animation_config.get("number_frames", config.get("frames", 1))
     animation_list = animation_config.get("list", [])
@@ -63,26 +64,28 @@ def _explode(world, position, config=None):
 
 
 def system_bullet_enemy_collision(world: esper.World, explosion_config=None) -> None:
-    bullets = list(world.get_components(CTagBullet, CTransform, CSurface))
-    enemies = list(world.get_components(CTagEnemy, CTransform, CSurface))
-    for bullet_id, (_, bt, bs) in bullets:
-        for enemy_id, (_, et, es) in enemies:
+    bullets = list(world.get_components(CTagBullet, CTransform, CHitBox))
+    enemies = list(world.get_components(CTagEnemy, CTransform, CHitBox))
+    for bullet_id, (_, bt, bh) in bullets:
+        for enemy_id, (_, et, eh) in enemies:
             if not world.entity_exists(bullet_id) or not world.entity_exists(enemy_id):
                 continue
-            if _rect(bt, bs).colliderect(_rect(et, es)):
-                _explode(world, et.pos + pygame.Vector2(es.size) / 2, explosion_config)
+            enemy_rect = _rect(et, eh)
+            if _rect(bt, bh).colliderect(enemy_rect):
+                _explode(world, pygame.Vector2(enemy_rect.center), explosion_config)
                 world.delete_entity(bullet_id)
                 world.delete_entity(enemy_id)
                 break
 
 
 def system_player_enemy_collision(world: esper.World, explosion_config=None, screen_size=None) -> None:
-    players = list(world.get_components(CTagPlayer, CTransform, CSurface, CPlayer))
-    enemies = list(world.get_components(CTagEnemy, CTransform, CSurface))
-    for player_id, (player_tag, pt, ps, player) in players:
-        for enemy_id, (_, et, es) in enemies:
-            if world.entity_exists(player_id) and world.entity_exists(enemy_id) and _rect(pt, ps).colliderect(_rect(et, es)):
-                _explode(world, et.pos + pygame.Vector2(es.size) / 2, explosion_config)
+    players = list(world.get_components(CTagPlayer, CTransform, CHitBox, CPlayer))
+    enemies = list(world.get_components(CTagEnemy, CTransform, CHitBox))
+    for player_id, (_, pt, ph, player) in players:
+        for enemy_id, (_, et, eh) in enemies:
+            enemy_rect = _rect(et, eh)
+            if world.entity_exists(player_id) and world.entity_exists(enemy_id) and _rect(pt, ph).colliderect(enemy_rect):
+                _explode(world, pygame.Vector2(enemy_rect.center), explosion_config)
                 world.delete_entity(enemy_id)
                 # Put the other Hunters back at their spawn points and pause them
                 # until the player leaves their aggro radius, preventing an

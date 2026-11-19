@@ -1,8 +1,8 @@
 {
     "image": "assets/img/player.png",
     "size": {
-        "x": 48,
-        "y": 48
+        "x": 16,
+        "y": 16
     },
     "animations": {
         "number_frames": 4,
@@ -21,6 +21,6 @@
             }
         ]
     },
-    "input_velocity": 100,
+    "input_velocity": 28,
     "sound_move": "assets/snd/laser.ogg"
 }

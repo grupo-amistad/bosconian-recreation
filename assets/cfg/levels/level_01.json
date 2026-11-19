@@ -1,0 +1,134 @@
+{
+  "player_spawn": {
+    "position": {
+      "x": 120,
+      "y": 96
+    },
+    "max_bullets": 4,
+    "special_ability": false
+  },
+  "dynamic_spawning": {
+    "start_time": 12.0,
+    "interval": 3.0,
+    "initial_count": 2,
+    "increase_every": 3,
+    "increase_amount": 1,
+    "enemy_types": [
+      "AsteroidA",
+      "AsteroidB",
+      "AsteroidC",
+      "Hunter"
+    ],
+    "spawn_area": {
+      "min_x": 16,
+      "max_x": 240,
+      "min_y": 16,
+      "max_y": 192
+    }
+  },
+  "enemy_spawn_events": [
+    {
+      "time": 0.0,
+      "enemy_type": "Hunter",
+      "position": {
+        "x": 149,
+        "y": 69
+      }
+    },
+    {
+      "time": 0.0,
+      "enemy_type": "Hunter",
+      "position": {
+        "x": 81,
+        "y": 116
+      }
+    },
+    {
+      "time": 0.0,
+      "enemy_type": "Hunter",
+      "position": {
+        "x": 11,
+        "y": 69
+      }
+    },
+    {
+      "time": 0.0,
+      "enemy_type": "Hunter",
+      "position": {
+        "x": 81,
+        "y": 8
+      }
+    },
+    {
+      "time": 3.0,
+      "enemy_type": "AsteroidA",
+      "position": {
+        "x": 13,
+        "y": 19
+      }
+    },
+    {
+      "time": 6.0,
+      "enemy_type": "AsteroidB",
+      "position": {
+        "x": 133,
+        "y": 77
+      }
+    },
+    {
+      "time": 9.0,
+      "enemy_type": "AsteroidC",
+      "position": {
+        "x": 53,
+        "y": 116
+      }
+    },
+    {
+      "time": 12.0,
+      "enemy_type": "AsteroidD",
+      "position": {
+        "x": 160,
+        "y": 19
+      }
+    },
+    {
+      "time": 14.0,
+      "enemy_type": "AsteroidA",
+      "position": {
+        "x": 24,
+        "y": 69
+      }
+    },
+    {
+      "time": 16.0,
+      "enemy_type": "AsteroidB",
+      "position": {
+        "x": 53,
+        "y": 77
+      }
+    },
+    {
+      "time": 18.0,
+      "enemy_type": "AsteroidC",
+      "position": {
+        "x": 64,
+        "y": 35
+      }
+    },
+    {
+      "time": 20.0,
+      "enemy_type": "AsteroidD",
+      "position": {
+        "x": 144,
+        "y": 100
+      }
+    }
+  ],
+  "level": 1,
+  "world_size": {
+    "w": 256,
+    "h": 208
+  },
+  "bases": [],
+  "obstacles": []
+}
