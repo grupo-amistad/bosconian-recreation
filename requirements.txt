@@ -1,2 +1,3 @@
 pygame-ce>=2.5,<3
-esper>=3.0,<4
+# This code uses esper.World; Esper 3.0 removed the World class.
+esper>=2.5,<3

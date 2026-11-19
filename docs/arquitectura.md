@@ -6,6 +6,7 @@
 
 ## ECS y entidades
 
+- La base depende de Esper 2.x porque utiliza `esper.World`; Esper 3.0 eliminó esa clase y migró la API a funciones de módulo. No actualizar a Esper 3 hasta migrar conjuntamente el motor y todos los sistemas.
 - Las entidades son identificadores creados por `esper.World`.
 - Los componentes guardan datos; no ejecutan lógica de juego.
 - Los sistemas consultan componentes y modifican el mundo.

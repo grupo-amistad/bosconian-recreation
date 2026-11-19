@@ -12,7 +12,7 @@ python -m venv .venv
 .venv\Scripts\activate
 # macOS / Linux:
 source .venv/bin/activate
-python -m pip install -r requirements.txt
+python -m pip install --upgrade -r requirements.txt
 python main.py
 ```
 
