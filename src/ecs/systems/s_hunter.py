@@ -7,9 +7,10 @@ from src.ecs.components.c_velocity import CVelocity
 from src.ecs.components.c_animation import CAnimation
 from src.ecs.components.c_surface import CSurface
 from src.services import ServiceLocator
+from src.engine.camera import shortest_delta
 
 
-def system_hunter(world: esper.World, dt: float):
+def system_hunter(world: esper.World, dt: float, world_size=None):
     del dt
     player_data = next(iter(world.get_components(CTagPlayer, CTransform, CSurface)), None)
     if not player_data:
@@ -20,8 +21,10 @@ def system_hunter(world: esper.World, dt: float):
         CHunter, CTransform, CVelocity, CSurface
     ):
         hunter_center = transform.pos + pygame.Vector2(surface.size) / 2
-        offset = hunter_center - (hunter.origin + pygame.Vector2(surface.size) / 2)
-        player_distance = hunter_center.distance_to(player_center)
+        origin_center = hunter.origin + pygame.Vector2(surface.size) / 2
+        offset = shortest_delta(origin_center, hunter_center, world_size) if world_size else hunter_center - origin_center
+        to_player = shortest_delta(hunter_center, player_center, world_size) if world_size else player_center - hunter_center
+        player_distance = to_player.length()
         if hunter.paused_until_player_moves_away:
             velocity.vel.update(0, 0)
             if player_distance > hunter.aggro_range:
@@ -37,7 +40,7 @@ def system_hunter(world: esper.World, dt: float):
                 hunter.returning = False
                 velocity.vel.update(0, 0)
                 continue
-        elif hunter_center.distance_to(player_center) <= hunter.aggro_range:
+        elif player_distance <= hunter.aggro_range:
             target = player_center
             if not hunter.was_chasing and hunter.chase_sound:
                 ServiceLocator.sounds.load(hunter.chase_sound).play()
@@ -47,7 +50,7 @@ def system_hunter(world: esper.World, dt: float):
             hunter.was_chasing = False
             continue
         target_center = pygame.Vector2(target) + pygame.Vector2(surface.size) / 2 if hunter.returning else pygame.Vector2(target)
-        direction = target_center - hunter_center
+        direction = shortest_delta(hunter_center, target_center, world_size) if world_size else target_center - hunter_center
         if direction.length_squared():
             velocity.vel = direction.normalize() * (hunter.return_speed if hunter.returning else hunter.speed)
 

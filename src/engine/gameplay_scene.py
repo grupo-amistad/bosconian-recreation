@@ -11,7 +11,7 @@ class GameplayScene(Scene):
 
     def handle_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-            self.engine.paused = not self.engine.paused
+            self.engine.pause(self)
 
     def update(self, delta_time: float) -> None:
         self.engine.delta_time = delta_time

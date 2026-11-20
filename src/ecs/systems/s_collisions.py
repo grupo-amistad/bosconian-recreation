@@ -13,6 +13,7 @@ from src.ecs.components.c_hunter import CHunter
 from src.ecs.components.c_player import CPlayer
 from src.ecs.components.c_explosion_lifetime import CExplosionLifetime
 from src.services import ServiceLocator
+from src.ecs.components.c_world_entity import CWorldEntity
 
 
 def _rect(transform, hitbox):
@@ -42,6 +43,7 @@ def _explode(world, position, config=None):
         surf.area = pygame.Rect(0, 0, frame_width, surf.surf.get_height())
     entity = world.create_entity()
     world.add_component(entity, surf)
+    world.add_component(entity, CWorldEntity())
     frame_width = surf.surf.get_width() // frames
     world.add_component(entity, CTransform(pygame.Vector2(position) - pygame.Vector2(frame_width, surf.surf.get_height()) / 2))
     world.add_component(entity, CTagExplosion())
@@ -63,7 +65,17 @@ def _explode(world, position, config=None):
         ServiceLocator.sounds.load(sound_path).play()
 
 
-def system_bullet_enemy_collision(world: esper.World, explosion_config=None) -> None:
+def _overlaps_wrapped(first, second, world_size):
+    if world_size is None:
+        return first.colliderect(second)
+    for dx in (-world_size.x, 0, world_size.x):
+        for dy in (-world_size.y, 0, world_size.y):
+            if first.colliderect(second.move(dx, dy)):
+                return True
+    return False
+
+
+def system_bullet_enemy_collision(world: esper.World, explosion_config=None, world_size=None) -> None:
     bullets = list(world.get_components(CTagBullet, CTransform, CHitBox))
     enemies = list(world.get_components(CTagEnemy, CTransform, CHitBox))
     for bullet_id, (_, bt, bh) in bullets:
@@ -71,20 +83,20 @@ def system_bullet_enemy_collision(world: esper.World, explosion_config=None) -> 
             if not world.entity_exists(bullet_id) or not world.entity_exists(enemy_id):
                 continue
             enemy_rect = _rect(et, eh)
-            if _rect(bt, bh).colliderect(enemy_rect):
+            if _overlaps_wrapped(_rect(bt, bh), enemy_rect, world_size):
                 _explode(world, pygame.Vector2(enemy_rect.center), explosion_config)
                 world.delete_entity(bullet_id)
                 world.delete_entity(enemy_id)
                 break
 
 
-def system_player_enemy_collision(world: esper.World, explosion_config=None, screen_size=None) -> None:
+def system_player_enemy_collision(world: esper.World, explosion_config=None, screen_size=None, world_size=None) -> None:
     players = list(world.get_components(CTagPlayer, CTransform, CHitBox, CPlayer))
     enemies = list(world.get_components(CTagEnemy, CTransform, CHitBox))
     for player_id, (_, pt, ph, player) in players:
         for enemy_id, (_, et, eh) in enemies:
             enemy_rect = _rect(et, eh)
-            if world.entity_exists(player_id) and world.entity_exists(enemy_id) and _rect(pt, ph).colliderect(enemy_rect):
+            if world.entity_exists(player_id) and world.entity_exists(enemy_id) and _overlaps_wrapped(_rect(pt, ph), enemy_rect, world_size):
                 _explode(world, pygame.Vector2(enemy_rect.center), explosion_config)
                 world.delete_entity(enemy_id)
                 # Put the other Hunters back at their spawn points and pause them
@@ -98,6 +110,9 @@ def system_player_enemy_collision(world: esper.World, explosion_config=None, scr
                         hunter_velocity.vel.update(0, 0)
                         hunter.returning = False
                         hunter.paused_until_player_moves_away = True
+                player.lives = max(0, player.lives - 1)
+                if player.lives == 0:
+                    player.dead = True
                 pt.pos.update(player.spawn_position)
                 velocity = world.try_component(player_id, CVelocity)
                 if velocity:

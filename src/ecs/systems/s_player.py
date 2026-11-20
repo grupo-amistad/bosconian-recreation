@@ -9,11 +9,10 @@ from src.ecs.components.c_tag_bullet import CTagBullet
 from src.ecs.components.c_tag_player import CTagPlayer
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_velocity import CVelocity
-import os
 from src.services import ServiceLocator
 
 
-def system_player_input(world: esper.World, delta_time: float) -> None:
+def system_player_input(world: esper.World, delta_time: float, camera=None, world_size=None) -> None:
     commands = {
         command.action: command
         for _, (command,) in world.get_components(CInputCommand)
@@ -40,20 +39,28 @@ def system_player_input(world: esper.World, delta_time: float) -> None:
 
         fire_command = commands["PLAYER_FIRE"]
         if fire_command.pressed:
-            _fire_bullet(world, player, transform)
+            _fire_bullet(world, player, transform, camera, world_size)
 
 
 def _fire_bullet(
     world: esper.World,
     player: CPlayer,
     transform: CTransform,
+    camera=None,
+    world_size=None,
 ) -> None:
     bullet_count = len(list(world.get_components(CTagBullet)))
     if bullet_count >= player.max_bullets:
         return
 
     mouse_position = pygame.Vector2(pygame.mouse.get_pos())
-    direction = mouse_position - (transform.pos + pygame.Vector2(*player_size(world)) / 2)
+    if camera is not None:
+        mouse_position = camera.screen_to_world(mouse_position)
+    center = transform.pos + pygame.Vector2(*player_size(world)) / 2
+    direction = mouse_position - center
+    if world_size is not None:
+        direction.x = (direction.x + world_size.x / 2) % world_size.x - world_size.x / 2
+        direction.y = (direction.y + world_size.y / 2) % world_size.y - world_size.y / 2
     if direction.length_squared() == 0:
         return
     direction.normalize_ip()
@@ -61,7 +68,6 @@ def _fire_bullet(
     config = player.bullet_config
     size_data = config.get("size", {"x": 18, "y": 18})
     size = pygame.Vector2(size_data["x"], size_data["y"])
-    center = transform.pos + pygame.Vector2(*player_size(world)) / 2
     image = config.get("image")
     if image:
         image = image

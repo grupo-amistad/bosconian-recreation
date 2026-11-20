@@ -7,9 +7,10 @@ from src.ecs.components.c_tag_enemy import CTagEnemy
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_tag_player import CTagPlayer
 from src.ecs.components.c_surface import CSurface
+from src.engine.camera import shortest_delta
 
 
-def system_special_ability(world: esper.World, dt: float) -> None:
+def system_special_ability(world: esper.World, dt: float, world_size=None) -> None:
     command = next(
         (command for _, (command,) in world.get_components(CInputCommand)
          if command.action == "PLAYER_SPECIAL"),
@@ -31,5 +32,7 @@ def system_special_ability(world: esper.World, dt: float) -> None:
     for entity, (_, transform, surface) in list(world.get_components(CTagEnemy, CTransform, CSurface)):
         enemy_center = transform.pos + pygame.Vector2(surface.size) / 2
         player_center = player_transform.pos
-        if enemy_center.distance_to(player_center) <= ability.radius:
+        distance = (shortest_delta(player_center, enemy_center, world_size).length()
+                    if world_size else enemy_center.distance_to(player_center))
+        if distance <= ability.radius:
             world.delete_entity(entity)
