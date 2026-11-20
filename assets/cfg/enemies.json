@@ -1,56 +1,81 @@
 {
     "AsteroidA": {
-        "image": "assets/img/asteroid_01.png",
+        "image": "assets/img/asteroid.png",
         "sound": "assets/snd/asteroid.ogg",
         "size": {"x": 16, "y": 16},
         "velocity_min": 8,
         "velocity_max": 15
     },
     "AsteroidB": {
-        "image": "assets/img/asteroid_02.png",
+        "image": "assets/img/asteroid.png",
         "sound": "assets/snd/asteroid.ogg",
         "size": {"x": 16, "y": 16},
         "velocity_min": 15,
         "velocity_max": 23
     },
     "AsteroidC": {
-        "image": "assets/img/asteroid_03.png",
+        "image": "assets/img/asteroid.png",
         "sound": "assets/snd/asteroid.ogg",
         "size": {"x": 16, "y": 16},
         "velocity_min": 23,
         "velocity_max": 30
     },
     "AsteroidD": {
-        "image": "assets/img/asteroid_04.png",
+        "image": "assets/img/asteroid.png",
         "sound": "assets/snd/asteroid.ogg",
         "size": {"x": 16, "y": 16},
         "velocity_min": 30,
         "velocity_max": 38
     },
     "Hunter": {
-        "image": "assets/img/enemy.png",
+        "image": "assets/img/Reconnaissance plane.png",
         "sound_chase": "assets/snd/ufo.ogg",
         "size": {"x": 16, "y": 16},
-        "animations": {
-            "number_frames": 6,
-            "list": [
-                {
-                    "name": "MOVE",
-                    "start": 0,
-                    "end": 5,
-                    "framerate": 10
-                },
-                {
-                    "name": "IDLE",
-                    "start": 0,
-                    "end": 0,
-                    "framerate": 1
-                }
-            ]
-        },
         "velocity_chase": 23,
         "velocity_return": 30,
         "distance_start_chase": 48,
         "distance_start_return": 53
+    },
+    "EnemyI": {
+        "image": "assets/img/AikI-type.png",
+        "sound": "assets/snd/asteroid.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 10,
+        "velocity_max": 16
+    },
+    "EnemyILeader": {
+        "image": "assets/img/AikI-type leader.png",
+        "sound": "assets/snd/asteroid.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 12,
+        "velocity_max": 18
+    },
+    "EnemyP": {
+        "image": "assets/img/FluorP-type.png",
+        "sound": "assets/snd/asteroid.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 12,
+        "velocity_max": 18
+    },
+    "EnemyPLeader": {
+        "image": "assets/img/FluorP-type leader.png",
+        "sound": "assets/snd/asteroid.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 14,
+        "velocity_max": 20
+    },
+    "EnemyE": {
+        "image": "assets/img/EddollE-type.png",
+        "sound": "assets/snd/asteroid.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 14,
+        "velocity_max": 20
+    },
+    "EnemyELeader": {
+        "image": "assets/img/EddollE-type leader.png",
+        "sound": "assets/snd/asteroid.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 16,
+        "velocity_max": 22
     }
 }

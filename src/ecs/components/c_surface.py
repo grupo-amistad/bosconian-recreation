@@ -24,7 +24,12 @@ class CSurface:
             self.surf = pygame.Surface(
                 (max(1, int(size.x * frames)), max(1, int(size.y))), pygame.SRCALPHA
             )
-            self.surf.fill(color or pygame.Color("white"))
+            fallback_color = color or pygame.Color("white")
+            for frame in range(frames):
+                frame_rect = pygame.Rect(
+                    round(frame * size.x), 0, max(1, round(size.x)), max(1, round(size.y))
+                )
+                pygame.draw.ellipse(self.surf, fallback_color, frame_rect)
         self.area = pygame.Rect(area) if area else self.surf.get_rect()
         if not image and not area:
             self.area.size = (max(1, int(size.x)), max(1, int(size.y)))

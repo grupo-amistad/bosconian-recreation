@@ -1,5 +1,6 @@
 import pygame
 from src.engine.scene import Scene
+from src.services import ServiceLocator
 
 
 class TextScene(Scene):
@@ -36,6 +37,10 @@ class CreditsScene(TextScene):
 class TitleScene(Scene):
     def __init__(self, engine):
         self.engine = engine
+        base = ServiceLocator.images.load("assets/img/Boskonian spacecraft.png")
+        mine = ServiceLocator.images.load("assets/img/space mine.png")
+        self.base_sprite = pygame.transform.scale(base, (72, 80))
+        self.mine_sprite = pygame.transform.scale(mine, (20, 20))
 
     def on_enter(self):
         self.engine.play_music("assets/mus/starshooterv2.1.ogg")
@@ -57,7 +62,10 @@ class TitleScene(Scene):
     def draw(self, target):
         target.fill((0, 0, 0))
         self.engine.starfield.draw(target)
-        self.engine.draw_lines(target, ("BOSCONIAN", "ENTER: JUGAR", "I: INSTRUCCIONES", "C: CREDITOS", "ESC: SALIR"), 76)
+        target.blit(self.base_sprite, ((target.get_width() - self.base_sprite.get_width()) // 2, 10))
+        target.blit(self.mine_sprite, (28, 55))
+        target.blit(self.mine_sprite, (target.get_width() - 48, 55))
+        self.engine.draw_lines(target, ("BOSCONIAN", "ENTER: JUGAR", "I: INSTRUCCIONES", "C: CREDITOS", "ESC: SALIR"), 105)
 
 
 class PauseScene(Scene):

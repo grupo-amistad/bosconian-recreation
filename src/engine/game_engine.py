@@ -9,11 +9,10 @@ from src.ecs.components.c_input_command import CInputCommand
 from src.ecs.components.c_player import CPlayer
 from src.ecs.components.c_special_ability import CSpecialAbility
 from src.ecs.components.c_surface import CSurface
-from src.ecs.components.c_tag_player import CTagPlayer
-from src.ecs.components.c_text import CText
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_velocity import CVelocity
 from src.ecs.systems.s_animation import system_animation
+from src.ecs.systems.s_bullet_lifetime import system_bullet_lifetime
 from src.ecs.systems.s_collisions import system_bullet_enemy_collision, system_player_enemy_collision
 from src.ecs.systems.s_enemy_spawner import system_enemy_spawner
 from src.ecs.systems.s_explosion_lifetime import system_explosion_lifetime
@@ -23,7 +22,6 @@ from src.ecs.systems.s_movement import system_movement
 from src.ecs.systems.s_player import system_player_input
 from src.ecs.systems.s_rendering import system_rendering
 from src.ecs.systems.s_special_ability import system_special_ability
-from src.ecs.systems.s_text import system_text_rendering
 from src.ecs.systems.s_wraparound import system_wraparound
 from src.engine.camera import Camera
 from src.engine.gameplay_scene import GameplayScene
@@ -43,6 +41,7 @@ class GameEngine:
         pygame.init()
         pygame.display.set_caption(self.window_cfg["title"])
         size = (self.window_cfg["size"]["w"], self.window_cfg["size"]["h"])
+        self.playfield_width = max(1, size[0] - 80)
         self.screen = pygame.display.set_mode(size)
         self.clock = pygame.time.Clock()
         self.framerate = self.window_cfg["framerate"]
@@ -52,8 +51,9 @@ class GameEngine:
         self.ecs_world = esper.World()
         self.events = []
         self.scene_manager = SceneManager()
-        self.starfield = Starfield(size)
+        self.starfield = Starfield((self.playfield_width, size[1]))
         self.minimap = MiniMap()
+        self.hud_font = None
         self.title_scene = TitleScene(self)
         self.level = 1
         self.score = 0
@@ -105,7 +105,7 @@ class GameEngine:
         self.explosion_config = self._load_config_file("assets/cfg/explosion.json")
         dimensions = level_cfg.get("world_size", self.window_cfg["size"])
         self.world_size = pygame.Vector2(dimensions["w"], dimensions["h"])
-        viewport = pygame.Vector2(self.screen.get_size())
+        viewport = pygame.Vector2(self.playfield_width, self.screen.get_height())
         self.camera = Camera(self.world_size, viewport)
         spawn = level_cfg["player_spawn"]
         spawn_pos = pygame.Vector2(spawn["position"]["x"], spawn["position"]["y"])
@@ -117,6 +117,8 @@ class GameEngine:
             image=player_cfg.get("image"), animations=animations_from_config(player_cfg),
             frames=animation_frame_count(player_cfg),
         )
+        player_surface = self.ecs_world.component_for_entity(self.player_entity, CSurface)
+        player_surface.base_image = player_surface.surf.copy()
         player = CPlayer(player_cfg["input_velocity"], bullet_cfg, spawn["max_bullets"], spawn_pos)
         player.lives = lives
         self._last_lives = lives
@@ -137,13 +139,8 @@ class GameEngine:
         self.ecs_world.add_component(spawner, CEnemySpawner(
             level_cfg.get("enemy_spawn_events", []), enemies_cfg, level_cfg.get("dynamic_spawning")))
 
-        self.ui_entities = {}
         interface = self._load_config_file("assets/cfg/interface.json")
-        font = ServiceLocator.fonts.load(interface["font"], interface["size"])
-        for name, pos in (("hud", (5, 5)), ("special", (5, 17))):
-            entity = self.ecs_world.create_entity()
-            self.ecs_world.add_component(entity, CText("", font, pygame.Color("white"), pygame.Vector2(pos)))
-            self.ui_entities[name] = entity
+        self.hud_font = ServiceLocator.fonts.load(interface["font"], 5)
         self.play_music("assets/mus/confrontation.ogg")
         self.scene_manager.request_change(GameplayScene(self))
 
@@ -183,6 +180,7 @@ class GameEngine:
         system_explosion_lifetime(self.ecs_world, self.delta_time)
         system_bullet_enemy_collision(self.ecs_world, self.explosion_config, self.world_size)
         system_player_enemy_collision(self.ecs_world, self.explosion_config, world_size=self.world_size)
+        system_bullet_lifetime(self.ecs_world, self.delta_time)
         self.ecs_world.process()
         player = self.current_player()
         if player:
@@ -191,11 +189,6 @@ class GameEngine:
             self.score = player.score
             self.camera.follow(self.player_position())
             self.starfield.update(self.delta_time, self.camera.delta)
-            self.ecs_world.component_for_entity(self.ui_entities["hud"], CText).set_text(
-                f"P{self.score:06d}  VIDAS {player.lives}  NIVEL {self.level}")
-            ability = self.ecs_world.try_component(self.player_entity, CSpecialAbility)
-            status = "LISTA" if ability and ability.cooldown_remaining <= 0 else "RECARGA"
-            self.ecs_world.component_for_entity(self.ui_entities["special"], CText).set_text(f"ESPECIAL {status}")
             if player.dead:
                 self.stop_music()
                 self.scene_manager.request_change(ContinueScene(self))
@@ -212,9 +205,36 @@ class GameEngine:
         target.fill(self.bg_color)
         self.starfield.draw(target)
         system_rendering(self.ecs_world, target, self.camera)
-        system_text_rendering(self.ecs_world, target)
+        self._draw_hud(target)
+
+    def _draw_hud(self, target):
+        panel_x = self.playfield_width
+        panel_width = target.get_width() - panel_x
+        pygame.draw.rect(target, (0, 0, 0), (panel_x, 0, panel_width, target.get_height()))
+        pygame.draw.line(target, (35, 35, 35), (panel_x, 0), (panel_x, target.get_height()))
+        font = self.hud_font or ServiceLocator.fonts.load("fnt/PressStart2P.ttf", 5)
+
+        def label(text, x, y, color):
+            target.blit(font.render(text, False, color), (x, y))
+
+        coral = (230, 105, 94)
+        white = (245, 245, 245)
+        label("HI-SCORE", panel_x + 5, 5, coral)
+        label("10000", panel_x + 30, 14, white)
+        label("SCORE", panel_x + 5, 25, coral)
+        current_score = font.render(str(self.score), False, white)
+        target.blit(current_score, (target.get_width() - current_score.get_width() - 5, 34))
+        pygame.draw.rect(target, (48, 180, 72), (panel_x + 4, 46, panel_width - 8, 15))
+        alert = font.render("GREEN", False, (0, 0, 0))
+        target.blit(alert, (panel_x + (panel_width - alert.get_width()) // 2, 50))
+        player_surface = self.ecs_world.try_component(self.player_entity, CSurface) if self.player_entity else None
         player_pos = self.player_position()
         self.minimap.draw(target, self.ecs_world, self.world_size, player_pos)
+        ship = pygame.Surface((18, 16), pygame.SRCALPHA)
+        pygame.draw.polygon(ship, white, [(9, 0), (17, 15), (9, 11), (1, 15)])
+        target.blit(ship, (panel_x + (panel_width - ship.get_width()) // 2, 164))
+        label("ROUND", panel_x + 5, 187, white)
+        label(f"{self.level:>2}", target.get_width() - 20, 187, white)
 
     def pause(self, gameplay_scene):
         self.pause_music()

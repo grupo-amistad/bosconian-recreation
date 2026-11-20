@@ -1,3 +1,6 @@
+import pygame
+
+
 class CPlayer:
     def __init__(
         self,
@@ -14,3 +17,6 @@ class CPlayer:
         self.lives = 4
         self.score = 0
         self.dead = False
+        self.facing = pygame.Vector2(0, -1)
+        self.facing_angle = 0
+        self.fire_cooldown_remaining = 0.0

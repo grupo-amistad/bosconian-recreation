@@ -17,7 +17,10 @@
       "AsteroidA",
       "AsteroidB",
       "AsteroidC",
-      "Hunter"
+      "Hunter",
+      "EnemyI",
+      "EnemyP",
+      "EnemyE"
     ],
     "spawn_area": {
       "min_x": 16,
@@ -69,7 +72,7 @@
     },
     {
       "time": 6.0,
-      "enemy_type": "AsteroidB",
+      "enemy_type": "EnemyI",
       "position": {
         "x": 133,
         "y": 77
@@ -85,7 +88,7 @@
     },
     {
       "time": 12.0,
-      "enemy_type": "AsteroidD",
+      "enemy_type": "EnemyP",
       "position": {
         "x": 160,
         "y": 19
@@ -109,7 +112,7 @@
     },
     {
       "time": 18.0,
-      "enemy_type": "AsteroidC",
+      "enemy_type": "EnemyE",
       "position": {
         "x": 64,
         "y": 35
