@@ -18,7 +18,7 @@ python main.py
 
 ## Estado de esta base
 
-La estructura inicial parte del videojuego de la entrega 4 del curso: conserva el ciclo principal, el mundo de Esper, componentes y sistemas ECS, fábricas de entidades, configuración JSON y servicios para cargar recursos. El repositorio contiene la fuente, sonidos y algunas imágenes; si falta una imagen configurada, se muestra una entidad de color para que el prototipo pueda seguir ejecutándose mientras se agregan los sprites finales. El juego de esa entrega es una referencia técnica; sus mecánicas todavía deben evolucionar para cumplir los requisitos de Bosconian.
+La estructura inicial parte del videojuego de la entrega 4 del curso: conserva el ciclo principal, el mundo de Esper, componentes y sistemas ECS, fábricas de entidades, configuración JSON y servicios para cargar recursos. Los sprites disponibles en `assets/img/` se usan para la nave del jugador, enemigos y elementos del menú; las imágenes faltantes se representan con una forma elíptica de color para que el prototipo siga ejecutándose mientras se agregan los sprites finales. El juego de esa entrega es una referencia técnica; sus mecánicas todavía deben evolucionar para cumplir los requisitos de Bosconian.
 
 La ventana base usa la resolución total de **256 × 208 píxeles**. El primer archivo de nivel está en `assets/cfg/levels/level_01.json`; los demás niveles deben seguir el contrato de [`docs/configuracion-de-niveles.md`](docs/configuracion-de-niveles.md). La jugabilidad y los assets del prototipo de la entrega anterior todavía se están reemplazando por los de Bosconian.
 
