@@ -4,16 +4,29 @@ from pathlib import Path
 import esper
 import pygame
 
-from src.create.prefab_creator import animations_from_config, animation_frame_count, create_player
+from src.create.prefab_creator import (
+    animations_from_config,
+    animation_frame_count,
+    create_base,
+    create_obstacle,
+    create_player,
+)
 from src.ecs.components.c_input_command import CInputCommand
 from src.ecs.components.c_player import CPlayer
+from src.ecs.components.c_combat import CScore
 from src.ecs.components.c_special_ability import CSpecialAbility
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_velocity import CVelocity
+from src.ecs.components.c_text import CText
 from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_bullet_lifetime import system_bullet_lifetime
-from src.ecs.systems.s_collisions import system_bullet_enemy_collision, system_player_enemy_collision
+from src.ecs.systems.s_combat import (
+    system_base_behavior,
+    system_combat_collisions,
+    system_enemy_behavior,
+    system_obstacle_motion,
+)
 from src.ecs.systems.s_enemy_spawner import system_enemy_spawner
 from src.ecs.systems.s_explosion_lifetime import system_explosion_lifetime
 from src.ecs.systems.s_hunter import system_hunter, system_moving_animation
@@ -30,6 +43,7 @@ from src.engine.scene_manager import SceneManager
 from src.services import ServiceLocator
 from src.ui.minimap import MiniMap
 from src.world.starfield import Starfield
+from src.ecs.components.c_enemy_spawner import CEnemySpawner
 
 
 class GameEngine:
@@ -103,6 +117,8 @@ class GameEngine:
         player_cfg = self._load_config_file("assets/cfg/player.json")
         bullet_cfg = self._load_config_file("assets/cfg/bullet.json")
         self.explosion_config = self._load_config_file("assets/cfg/explosion.json")
+        base_configs = self._load_config_file("assets/cfg/bases.json")
+        obstacle_configs = self._load_config_file("assets/cfg/obstacles.json")
         dimensions = level_cfg.get("world_size", self.window_cfg["size"])
         self.world_size = pygame.Vector2(dimensions["w"], dimensions["h"])
         viewport = pygame.Vector2(self.playfield_width, self.screen.get_height())
@@ -116,6 +132,8 @@ class GameEngine:
             pygame.Vector2(), pygame.Color(*[color_data[k] for k in ("r", "g", "b")]),
             image=player_cfg.get("image"), animations=animations_from_config(player_cfg),
             frames=animation_frame_count(player_cfg),
+            hitbox_size=player_cfg.get("hitbox_size"),
+            hitbox_offset=player_cfg.get("hitbox_offset"),
         )
         player_surface = self.ecs_world.component_for_entity(self.player_entity, CSurface)
         player_surface.base_image = player_surface.surf.copy()
@@ -125,6 +143,9 @@ class GameEngine:
         player.score = self.score if keep_score else 0
         player.move_sound = ServiceLocator.sounds.load(player_cfg.get("sound_move", "snd/laser.ogg"))
         self.ecs_world.add_component(self.player_entity, player)
+        self.ecs_world.add_component(
+            self.player_entity, CScore(points=player.score)
+        )
         self.ecs_world.add_component(self.player_entity, CSpecialAbility())
 
         for action, key in (("PLAYER_LEFT", pygame.K_LEFT), ("PLAYER_RIGHT", pygame.K_RIGHT),
@@ -135,10 +156,33 @@ class GameEngine:
         fire = self.ecs_world.create_entity()
         self.ecs_world.add_component(fire, CInputCommand("PLAYER_FIRE", "mouse", pygame.BUTTON_LEFT))
         spawner = self.ecs_world.create_entity()
-        from src.ecs.components.c_enemy_spawner import CEnemySpawner
         self.ecs_world.add_component(spawner, CEnemySpawner(
             level_cfg.get("enemy_spawn_events", []), enemies_cfg, level_cfg.get("dynamic_spawning")))
 
+        for base_entry in level_cfg.get("bases", []):
+            base_type = base_entry.get("type", "default")
+            if base_type not in base_configs:
+                raise ValueError(f"Unknown base type: {base_type}")
+            config = {**base_configs[base_type], **base_entry}
+            position = config.get("position", {})
+            create_base(
+                self.ecs_world,
+                config,
+                pygame.Vector2(position["x"], position["y"]),
+                level_cfg.get("level", self.level),
+                enemies_cfg,
+            )
+        for obstacle_entry in level_cfg.get("obstacles", []):
+            obstacle_type = obstacle_entry.get("type")
+            if obstacle_type not in obstacle_configs:
+                raise ValueError(f"Unknown obstacle type: {obstacle_type}")
+            config = {**obstacle_configs[obstacle_type], **obstacle_entry}
+            position = config.get("position", {})
+            create_obstacle(
+                self.ecs_world,
+                config,
+                pygame.Vector2(position["x"], position["y"]),
+            )
         interface = self._load_config_file("assets/cfg/interface.json")
         self.hud_font = ServiceLocator.fonts.load(interface["font"], 5)
         self.play_music("assets/mus/confrontation.ogg")
@@ -172,14 +216,22 @@ class GameEngine:
             return
         system_player_input(self.ecs_world, self.delta_time, self.camera, self.world_size)
         system_enemy_spawner(self.ecs_world, self.delta_time)
+        system_base_behavior(
+            self.ecs_world, self.delta_time, self.world_size
+        )
+        system_enemy_behavior(
+            self.ecs_world, self.delta_time, self.world_size
+        )
         system_movement(self.ecs_world, self.delta_time)
         system_wraparound(self.ecs_world, self.world_size)
         system_hunter(self.ecs_world, self.delta_time, self.world_size)
+        system_obstacle_motion(self.ecs_world, self.delta_time)
         system_moving_animation(self.ecs_world)
         system_animation(self.ecs_world, self.delta_time)
         system_explosion_lifetime(self.ecs_world, self.delta_time)
-        system_bullet_enemy_collision(self.ecs_world, self.explosion_config, self.world_size)
-        system_player_enemy_collision(self.ecs_world, self.explosion_config, world_size=self.world_size)
+        system_combat_collisions(
+            self.ecs_world, self.explosion_config, self.world_size
+        )
         system_bullet_lifetime(self.ecs_world, self.delta_time)
         self.ecs_world.process()
         player = self.current_player()
@@ -187,6 +239,11 @@ class GameEngine:
             self.lives_lost += max(0, self._last_lives - player.lives)
             self._last_lives = player.lives
             self.score = player.score
+            score_state = self.ecs_world.try_component(
+                self.player_entity, CScore
+            )
+            if score_state:
+                score_state.points = player.score
             self.camera.follow(self.player_position())
             self.starfield.update(self.delta_time, self.camera.delta)
             if player.dead:

@@ -11,7 +11,19 @@ Los niveles se guardan como JSON independientes en `assets/cfg/levels/level_01.j
 - `player_spawn.special_ability`: si la habilidad especial está disponible en esta ronda.
 - `enemy_spawn_events`: lista de apariciones programadas. Cada entrada tiene `time` en segundos, `enemy_type` (clave de `assets/cfg/enemies.json`) y `position` (`x`, `y`). El sistema añade internamente el estado `spawned`.
 - `dynamic_spawning`: configuración opcional de oleadas (`start_time`, `interval`, `initial_count`, `increase_every`, `increase_amount`, `enemy_types` y `spawn_area`). El área define `min_x`, `max_x`, `min_y`, `max_y` en píxeles.
-- `bases` y `obstacles`: arreglos reservados para las entidades de nivel que integrará el sistema de combate; cada tipo documentará su propio objeto cuando se implemente.
+- `bases`: lista de bases con `type`, `position` y `orientation`. El tipo se configura en `assets/cfg/bases.json`; cada base crea seis torretas por defecto, alterna el estado del núcleo y puede producir enemigos E desde el nivel indicado.
+- `obstacles`: lista de obstáculos con `type`, `position` y, opcionalmente, `velocity`. Los tipos se configuran en `assets/cfg/obstacles.json`. `mine` es destructible, animada y letal; `rock` es indestructible y rebota frente a las bases. `rock_mobile` usa el mismo comportamiento con velocidad inicial.
+
+## Configuración de combate
+
+`assets/cfg/enemies.json` define I, P y E junto con los tipos de prototipo anteriores. Cada entrada puede indicar:
+
+- `size`, `hitbox_size` y `hitbox_offset`, independientemente del sprite. Los mismos campos de hitbox aplican a los proyectiles del jugador y pueden configurarse para torretas, bases y obstáculos.
+- `velocity_min` y `velocity_max` en píxeles por segundo.
+- `health`, `score`, `behavior` (`patrol`, `seek_base` o `seek_player`) y `turn_rate` en grados por segundo.
+- `fire_interval`, `bullet_speed` y `bullet_size` para enemigos que disparan.
+
+Las bases (`assets/cfg/bases.json`) permiten configurar dimensiones de hitbox y colores del núcleo, radio y cantidad de torretas, orientación, velocidades de giro/disparo, tiempos de apertura/cierre, puntajes y nivel/intervalo de aparición de E. Los obstáculos admiten `destructible`, `lethal`, `blast_radius`, `health`, `score`, hitbox y animaciones. Las reglas AABB se resuelven desde un solo sistema de combate.
 
 ## Unidades y límites
 

@@ -1,6 +1,7 @@
 {
-    "image": "assets/img/bullet.png",
     "size": {"x": 4, "y": 4},
+    "hitbox_size": {"x": 3, "y": 3},
+    "color": {"r": 255, "g": 255, "b": 255},
     "velocity": 60,
     "sound": "assets/snd/laser.ogg"
 }

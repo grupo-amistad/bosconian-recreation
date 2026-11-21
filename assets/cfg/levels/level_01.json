@@ -32,6 +32,16 @@
   "enemy_spawn_events": [
     {
       "time": 0.0,
+      "enemy_type": "I",
+      "position": {"x": 200, "y": 42}
+    },
+    {
+      "time": 1.0,
+      "enemy_type": "P",
+      "position": {"x": 220, "y": 150}
+    },
+    {
+      "time": 0.0,
       "enemy_type": "Hunter",
       "position": {
         "x": 149,
@@ -132,6 +142,20 @@
     "w": 256,
     "h": 208
   },
-  "bases": [],
-  "obstacles": []
+  "bases": [
+    {
+      "type": "default",
+      "position": {"x": 112, "y": 70},
+      "orientation": 0
+    }
+  ],
+  "obstacles": [
+    {"type": "mine", "position": {"x": 52, "y": 54}},
+    {"type": "rock", "position": {"x": 42, "y": 152}},
+    {
+      "type": "rock_mobile",
+      "position": {"x": 208, "y": 102},
+      "velocity": {"x": 10, "y": -6}
+    }
+  ]
 }

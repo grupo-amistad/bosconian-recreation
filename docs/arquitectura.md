@@ -21,6 +21,11 @@
 - `CAnimation`: estado del sprite animado y tiempos en segundos.
 - `CHitBox.size` y `CHitBox.offset`: dimensiones y desplazamiento en píxeles; su AABB se calcula desde `CTransform` y no depende del sprite.
 - `CState.name`, `elapsed` y `data`: estado de gameplay, duración en segundos y datos opcionales.
+- `CCombatStats`: salud y puntaje otorgado al destruir una entidad.
+- `CEnemyBehavior`: modo configurable, velocidad y límite de giro del steering.
+- `CBaseState`/`CTurretState`: ciclo del núcleo, nivel de aparición E y relación entre base y seis torretas.
+- `CObstacleState`: tipo, destructibilidad, letalidad y puntaje.
+- `CScore`: puntaje acumulado del jugador.
 
 Las fábricas pueden crear una hitbox con el tamaño visual como valor inicial, pero la almacenan en `CHitBox`. Cada entidad puede definir dimensiones y offset propios sin cambiar el sprite.
 
@@ -40,6 +45,7 @@ Las fábricas pueden crear una hitbox con el tamaño visual como valor inicial, 
 - Integrante 3 implementa combate, enemigos, bases y obstáculos, coordinando hitboxes con el integrante 2.
 - Integrante 4 implementa niveles, mundo e interfaz, coordinando la cámara con el integrante 1 y las alertas/spawns con el integrante 3.
 - Antes de cambiar un componente compartido, se debe abrir un PR o avisar al equipo para actualizar sus consumidores en el mismo cambio.
+- `system_combat_collisions` concentra las reglas AABB de proyectiles, jugador, enemigos, bases, torretas y obstáculos; no se deben agregar sistemas paralelos que apliquen el mismo daño.
 
 ## Escenas
 

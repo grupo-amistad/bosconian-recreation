@@ -61,8 +61,9 @@ class FontsService:
         key = (path, size)
         if key not in self._cache:
             candidate = self.root / path
-            if not candidate.exists() and not path.startswith("assets/"):
-                candidate = self.root / "assets" / path
+            if not candidate.exists():
+                relative_path = path.replace("assets/", "", 1)
+                candidate = self.root / "assets" / relative_path
             if not candidate.exists() and path.startswith("assets/"):
                 candidate = self.root / path.removeprefix("assets/")
             self._cache[key] = pygame.font.Font(candidate, size)

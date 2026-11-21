@@ -7,6 +7,7 @@ from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_velocity import CVelocity
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_tag_enemy import CTagEnemy
+from src.ecs.components.c_combat import CTagObstacle
 
 def system_screen_bounce(world:esper.World, screen:pygame.Surface):
     screen_rect = screen.get_rect()
@@ -18,17 +19,21 @@ def system_screen_bounce(world:esper.World, screen:pygame.Surface):
     c_v:CVelocity
     c_s:CSurface
     for _, (_, c_t, c_v, c_s) in components:
-        cuad_rect = pygame.Rect(
-            int(c_t.pos.x), int(c_t.pos.y), *c_s.size
-        )
-        if cuad_rect.left < 0 or cuad_rect.right > screen_rect.width:
-            if c_v.vel.x:
-                c_v.vel.x *= -1
-            cuad_rect.clamp_ip(screen_rect)
-            c_t.pos.x = float(cuad_rect.x)
+        _bounce_inside(c_t, c_v, c_s, screen_rect)
+    obstacles = world.get_components(
+        CTagObstacle, CTransform, CVelocity, CSurface
+    )
+    for _, (_, c_t, c_v, c_s) in obstacles:
+        _bounce_inside(c_t, c_v, c_s, screen_rect)
 
-        if cuad_rect.top < 0 or cuad_rect.bottom > screen_rect.height:
-            if c_v.vel.y:
-                c_v.vel.y *= -1
-            cuad_rect.clamp_ip(screen_rect)
-            c_t.pos.y = float(cuad_rect.y)
+
+def _bounce_inside(transform, velocity, surface, bounds):
+    rect = pygame.Rect(int(transform.pos.x), int(transform.pos.y), *surface.size)
+    if rect.left < bounds.left or rect.right > bounds.right:
+        velocity.vel.x *= -1
+        rect.clamp_ip(bounds)
+        transform.pos.x = float(rect.x)
+    if rect.top < bounds.top or rect.bottom > bounds.bottom:
+        velocity.vel.y *= -1
+        rect.clamp_ip(bounds)
+        transform.pos.y = float(rect.y)
