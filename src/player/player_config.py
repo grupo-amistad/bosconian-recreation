@@ -44,9 +44,9 @@ class ShotConfig:
 
     speed: float = 180.0
     range: float = 120.0
-    cooldown: float = 0.12
-    max_bullets: int = 4
-    autofire: bool = False
+    cooldown: float = 0.07
+    max_bullets: int = 12
+    autofire: bool = True
     inherit_ship_velocity: bool = True
     muzzle_offset: float = 6.0
     offscreen_margin: float = 8.0

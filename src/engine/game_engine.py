@@ -280,12 +280,14 @@ class GameEngine:
         pygame.draw.rect(target, (48, 180, 72), (panel_x + 4, 46, panel_width - 8, 15))
         alert = font.render("GREEN", False, (0, 0, 0))
         target.blit(alert, (panel_x + (panel_width - alert.get_width()) // 2, 50))
-        player_surface = self.ecs_world.try_component(self.player_entity, CSurface) if self.player_entity else None
         player_pos = self.player_position()
         self.minimap.draw(target, self.ecs_world, self.world_size, player_pos)
-        ship = pygame.Surface((18, 16), pygame.SRCALPHA)
-        pygame.draw.polygon(ship, white, [(9, 0), (17, 15), (9, 11), (1, 15)])
-        target.blit(ship, (panel_x + (panel_width - ship.get_width()) // 2, 164))
+        player = self.current_player()
+        lives = max(0, min(4, player.lives if player else 0))
+        for index in range(lives):
+            ship = pygame.Surface((10, 12), pygame.SRCALPHA)
+            pygame.draw.polygon(ship, white, [(5, 0), (9, 11), (5, 8), (1, 11)])
+            target.blit(ship, (panel_x + 8 + index * 15, 163))
         label("ROUND", panel_x + 5, 187, white)
         label(f"{self.level:>2}", target.get_width() - 20, 187, white)
 

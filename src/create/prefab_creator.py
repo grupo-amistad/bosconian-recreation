@@ -25,6 +25,7 @@ from src.ecs.components.c_tag_enemy import CTagEnemy
 from src.ecs.components.c_tag_player import CTagPlayer
 from src.ecs.components.c_animation import Animation, CAnimation
 from src.ecs.components.c_hunter import CHunter
+from src.ecs.components.c_sprite_rotation import CSpriteRotation
 
 
 def animations_from_config(config):
@@ -38,6 +39,27 @@ def animations_from_config(config):
 def animation_frame_count(config):
     data = config.get("animations", {})
     return data.get("number_frames", config.get("frames", 1)) if isinstance(data, dict) else config.get("frames", 1)
+
+
+def _orientation_degrees(value) -> float:
+    """Convert numeric or cardinal JSON orientations into degrees."""
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        cardinal = {"horizontal": 0.0, "vertical": 90.0}
+        if normalized in cardinal:
+            return cardinal[normalized]
+        try:
+            return float(normalized)
+        except ValueError as error:
+            raise ValueError(
+                f"Orientación no válida: {value!r}. Usa grados numéricos, "
+                "'horizontal' o 'vertical'."
+            ) from error
+    raise TypeError(
+        f"La orientación debe ser grados o una dirección cardinal, no {type(value).__name__}."
+    )
 
 
 def create_entity(world, pos, vel, tag, image=None, size=None, color=None,
@@ -115,6 +137,9 @@ def create_enemy(world, config, pos, kind):
             config.get("health", 1), config.get("score", 100), kind
         ),
     )
+    if kind in {"EnemyI", "EnemyILeader", "EnemyP", "EnemyPLeader", "EnemyE", "EnemyELeader", "Hunter"}:
+        surface = world.component_for_entity(entity, CSurface)
+        world.add_component(entity, CSpriteRotation(surface.surf.copy(), 90.0))
     if is_hunter:
         world.add_component(
             entity,
@@ -152,17 +177,37 @@ def create_enemy(world, config, pos, kind):
 def create_enemy_bullet(
     world, pos, velocity, size=None, hitbox_size=None, hitbox_offset=None
 ):
-    size = pygame.Vector2(size or (4, 4))
-    return create_entity(
+    velocity = pygame.Vector2(velocity)
+    size = pygame.Vector2(size or (5, 7))
+    entity = create_entity(
         world,
         pos,
         velocity,
         CTagEnemyBullet,
         size=size,
-        color=pygame.Color(255, 80, 80),
+        color=pygame.Color(255, 70, 50),
         hitbox_size=hitbox_size if hitbox_size is not None else size,
         hitbox_offset=hitbox_offset,
     )
+    surface = world.component_for_entity(entity, CSurface)
+    projectile = pygame.Surface((9, 9), pygame.SRCALPHA)
+    center_x = 4
+    pygame.draw.polygon(
+        projectile,
+        (255, 65, 45),
+        [(center_x, 0), (7, 4), (5, 8), (center_x, 6), (3, 8), (1, 4)],
+    )
+    pygame.draw.line(
+        projectile, (255, 230, 145), (center_x, 2),
+        (center_x, projectile.get_height() - 3), 1,
+    )
+    surface.surf = projectile
+    surface.area = projectile.get_rect()
+    transform = world.component_for_entity(entity, CTransform)
+    if velocity.length_squared():
+        transform.angle = math.degrees(math.atan2(velocity.x, -velocity.y)) % 360
+    world.add_component(entity, CSpriteRotation(projectile.copy(), 45.0))
+    return entity
 
 
 def create_base(world, config, pos, level, enemy_configs):
@@ -222,8 +267,9 @@ def create_base(world, config, pos, level, enemy_configs):
     )
     turret_count = config.get("turret_count", 6)
     radius = config.get("turret_radius", max(size) / 2 + 5)
+    base_orientation = _orientation_degrees(config.get("orientation", 0))
     for index in range(turret_count):
-        angle = config.get("orientation", 0) + index * 360 / turret_count
+        angle = base_orientation + index * 360 / turret_count
         radians = math.radians(angle)
         turret_size = pygame.Vector2(8, 8)
         turret_id = create_entity(

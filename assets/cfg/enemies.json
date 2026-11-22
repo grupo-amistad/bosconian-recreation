@@ -41,41 +41,59 @@
         "sound": "assets/sfx/enemy_shoot.ogg",
         "size": {"x": 16, "y": 16},
         "velocity_min": 10,
-        "velocity_max": 16
+        "velocity_max": 16,
+        "fire_interval": 3.2,
+        "bullet_speed": 48,
+        "bullet_size": {"x": 5, "y": 7}
     },
     "EnemyILeader": {
         "image": "assets/img/AikI-type leader.png",
         "sound": "assets/sfx/enemy_shoot.ogg",
         "size": {"x": 16, "y": 16},
         "velocity_min": 12,
-        "velocity_max": 18
+        "velocity_max": 18,
+        "fire_interval": 2.8,
+        "bullet_speed": 52,
+        "bullet_size": {"x": 5, "y": 7}
     },
     "EnemyP": {
         "image": "assets/img/FluorP-type.png",
         "sound": "assets/sfx/enemy_shoot.ogg",
         "size": {"x": 16, "y": 16},
         "velocity_min": 12,
-        "velocity_max": 18
+        "velocity_max": 18,
+        "fire_interval": 2.6,
+        "bullet_speed": 55,
+        "bullet_size": {"x": 5, "y": 7}
     },
     "EnemyPLeader": {
         "image": "assets/img/FluorP-type leader.png",
         "sound": "assets/sfx/enemy_shoot.ogg",
         "size": {"x": 16, "y": 16},
         "velocity_min": 14,
-        "velocity_max": 20
+        "velocity_max": 20,
+        "fire_interval": 2.4,
+        "bullet_speed": 58,
+        "bullet_size": {"x": 5, "y": 7}
     },
     "EnemyE": {
         "image": "assets/img/EddollE-type.png",
         "sound": "assets/sfx/enemy_shoot.ogg",
         "size": {"x": 16, "y": 16},
         "velocity_min": 14,
-        "velocity_max": 20
+        "velocity_max": 20,
+        "fire_interval": 2.5,
+        "bullet_speed": 55,
+        "bullet_size": {"x": 5, "y": 7}
     },
     "EnemyELeader": {
         "image": "assets/img/EddollE-type leader.png",
         "sound": "assets/sfx/enemy_shoot.ogg",
         "size": {"x": 16, "y": 16},
         "velocity_min": 16,
-        "velocity_max": 22
+        "velocity_max": 22,
+        "fire_interval": 2.2,
+        "bullet_speed": 60,
+        "bullet_size": {"x": 5, "y": 7}
     }
 }

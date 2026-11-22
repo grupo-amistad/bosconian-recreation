@@ -1,9 +1,13 @@
+import math
+
 import esper
 import pygame
 
 from src.ecs.components.c_sprite_rotation import CSpriteRotation
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
+from src.ecs.components.c_velocity import CVelocity
+from src.ecs.components.c_tag_enemy import CTagEnemy
 
 
 def _rotated(base: pygame.Surface, angle: float) -> pygame.Surface:
@@ -15,6 +19,14 @@ def _rotated(base: pygame.Surface, angle: float) -> pygame.Surface:
 
 
 def system_sprite_rotation(world: esper.World) -> None:
+    for _, (_, _, transform, velocity) in world.get_components(
+        CTagEnemy, CSpriteRotation, CTransform, CVelocity
+    ):
+        if velocity.vel.length_squared() > 0.01:
+            transform.angle = math.degrees(
+                math.atan2(velocity.vel.x, -velocity.vel.y)
+            ) % 360
+
     for _, (rotation, transform, surface) in world.get_components(
         CSpriteRotation, CTransform, CSurface
     ):

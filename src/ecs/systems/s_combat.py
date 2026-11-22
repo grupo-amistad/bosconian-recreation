@@ -51,8 +51,8 @@ def system_enemy_behavior(
             CTagBase, CTransform, CHitBox
         )
     ]
-    for _, (_, behavior, transform, velocity, state) in world.get_components(
-        CTagEnemy, CEnemyBehavior, CTransform, CVelocity, CState
+    for _, (_, behavior, transform, velocity, state, surface) in world.get_components(
+        CTagEnemy, CEnemyBehavior, CTransform, CVelocity, CState, CSurface
     ):
         state.elapsed += delta_time
         state.name = behavior.mode.upper()
@@ -85,12 +85,16 @@ def system_enemy_behavior(
         behavior.fire_elapsed += delta_time
         if behavior.fire_elapsed < behavior.fire_interval:
             continue
-        direction = shortest_delta(transform.pos, player_position, world_size)
+        enemy_center = transform.pos + pygame.Vector2(surface.size) / 2
+        direction = shortest_delta(enemy_center, player_position, world_size)
         if direction.length_squared():
+            direction.normalize_ip()
+            bullet_size = pygame.Vector2(behavior.bullet_size)
+            muzzle = enemy_center + direction * (max(surface.size) / 2 + 2)
             create_enemy_bullet(
                 world,
-                transform.pos,
-                direction.normalize() * behavior.bullet_speed,
+                muzzle - bullet_size / 2,
+                direction * behavior.bullet_speed,
                 behavior.bullet_size,
                 behavior.bullet_hitbox_size,
                 behavior.bullet_hitbox_offset,
@@ -164,11 +168,18 @@ def system_base_behavior(
                 world_size,
             )
             if aim.length_squared():
+                aim.normalize_ip()
+                bullet_size = pygame.Vector2(state.bullet_hitbox_size)
+                muzzle = (
+                    turret_transform.pos
+                    + pygame.Vector2(4, 4)
+                    + aim * 6
+                )
                 create_enemy_bullet(
                     world,
-                    turret_transform.pos + pygame.Vector2(2, 2),
-                    aim.normalize() * state.bullet_speed,
-                    pygame.Vector2(state.bullet_hitbox_size),
+                    muzzle - bullet_size / 2,
+                    aim * state.bullet_speed,
+                    bullet_size,
                     state.bullet_hitbox_size,
                     state.bullet_hitbox_offset,
                 )
