@@ -1,9 +1,40 @@
 {
     "image": "assets/img/Hero.png",
-    "size": {
-        "x": 16,
-        "y": 16
+    "size": {"x": 16, "y": 16},
+    "hitbox_size": {"x": 12, "y": 12},
+    "hitbox_offset": {"x": 2, "y": 2},
+    "controls": {
+        "PLAYER_LEFT": ["left", "a"],
+        "PLAYER_RIGHT": ["right", "d"],
+        "PLAYER_UP": ["up", "w"],
+        "PLAYER_DOWN": ["down", "s"],
+        "PLAYER_FIRE": ["z", "space"],
+        "PLAYER_SPECIAL": ["x"]
     },
-    "input_velocity": 28,
-    "sound_move": "assets/snd/laser.ogg"
+    "movement": {
+        "max_speed": 64,
+        "cruise_speed": 32,
+        "acceleration": 160,
+        "deceleration": 96,
+        "turn_speed": 720,
+        "allow_diagonals": true,
+        "rotation_step": 45
+    },
+    "special": {
+        "uses_per_level": 3,
+        "bullet_count": 3,
+        "spread_degrees": 15,
+        "cooldown": 0.4,
+        "sound": "assets/sfx/player_special.ogg"
+    },
+    "life": {
+        "initial_lives": 4,
+        "death_duration": 1.6,
+        "explosion_count": 5,
+        "explosion_interval": 0.18,
+        "explosion_spread": 10,
+        "invulnerability": 2.0,
+        "blink_interval": 0.1,
+        "death_sound": "assets/sfx/player_death.ogg"
+    }
 }

@@ -27,7 +27,9 @@ from src.ecs.components.c_tag_player import CTagPlayer
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_velocity import CVelocity
 from src.ecs.systems.s_collisions import _explode
+from src.ecs.systems.s_player_life import request_player_death
 from src.engine.camera import shortest_delta
+
 
 
 def system_enemy_behavior(
@@ -562,7 +564,6 @@ def _resolve_solid_collision(
         if velocity:
             velocity.vel.y = -velocity.vel.y
 
-
 def _hurt_player(
     world: esper.World,
     player_id: int,
@@ -571,26 +572,10 @@ def _hurt_player(
     position,
     destroyed: set[int] | None = None,
 ) -> None:
+    del player_transform
     if destroyed is not None and player_id in destroyed:
         return
-    _explode(world, pygame.Vector2(position), explosion_config)
-    player = world.try_component(player_id, CPlayer)
-    if player:
-        player.lives = max(0, player.lives - 1)
-        if player.lives == 0:
-            player.dead = True
-        if player.spawn_position is not None:
-            player_transform.pos.update(player.spawn_position)
-        velocity = world.try_component(player_id, CVelocity)
-        if velocity:
-            velocity.vel.update(0, 0)
-        for other_id, (hunter, hunter_transform, hunter_velocity) in list(
-            world.get_components(CHunter, CTransform, CVelocity)
-        ):
-            if other_id != player_id:
-                hunter_transform.pos.update(hunter.origin)
-                hunter_velocity.vel.update(0, 0)
-                hunter.returning = False
-                hunter.paused_until_player_moves_away = True
-        if destroyed is not None:
-            destroyed.add(player_id)
+    if not request_player_death(world, player_id, explosion_config, position):
+        return
+    if destroyed is not None:
+        destroyed.add(player_id)

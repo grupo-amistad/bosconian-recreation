@@ -1,13 +1,16 @@
 import pygame
 
 from src.engine.scene import Scene
+from src.player.player_commands import release_input_commands
 
 
 class GameplayScene(Scene):
-    """Scene adapter for the existing ECS gameplay systems."""
 
     def __init__(self, engine) -> None:
         self.engine = engine
+
+    def on_enter(self) -> None:
+        release_input_commands(self.engine.ecs_world)
 
     def handle_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
