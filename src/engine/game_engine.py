@@ -44,6 +44,17 @@ from src.services import ServiceLocator
 from src.ui.minimap import MiniMap
 from src.world.starfield import Starfield
 from src.ecs.components.c_enemy_spawner import CEnemySpawner
+from src.ecs.systems.s_player_life import system_player_life
+from src.ecs.systems.s_player_movement import system_player_movement
+from src.ecs.systems.s_player_shooting import (
+    system_player_bullet_bounds,
+    system_player_shooting,
+    system_player_special,
+)
+from src.ecs.systems.s_sprite_rotation import system_sprite_rotation
+from src.player.player_commands import create_player_input_bindings, system_player_commands
+from src.player.player_config import PlayerConfig
+from src.player.player_factory import create_player_entity
 
 
 class GameEngine:
@@ -125,36 +136,16 @@ class GameEngine:
         self.camera = Camera(self.world_size, viewport)
         spawn = level_cfg["player_spawn"]
         spawn_pos = pygame.Vector2(spawn["position"]["x"], spawn["position"]["y"])
-        size_data = player_cfg.get("size", {"x": 32, "y": 32})
-        color_data = player_cfg.get("color", {"r": 255, "g": 255, "b": 255})
-        self.player_entity = create_player(
-            self.ecs_world, pygame.Vector2(size_data["x"], size_data["y"]), spawn_pos,
-            pygame.Vector2(), pygame.Color(*[color_data[k] for k in ("r", "g", "b")]),
-            image=player_cfg.get("image"), animations=animations_from_config(player_cfg),
-            frames=animation_frame_count(player_cfg),
-            hitbox_size=player_cfg.get("hitbox_size"),
-            hitbox_offset=player_cfg.get("hitbox_offset"),
+        player_config = PlayerConfig.from_dicts(player_cfg, bullet_cfg, spawn)
+        self.player_entity = create_player_entity(
+            self.ecs_world,
+            player_config,
+            spawn_pos,
+            lives=lives,
+            score=self.score if keep_score else 0,
         )
-        player_surface = self.ecs_world.component_for_entity(self.player_entity, CSurface)
-        player_surface.base_image = player_surface.surf.copy()
-        player = CPlayer(player_cfg["input_velocity"], bullet_cfg, spawn["max_bullets"], spawn_pos)
-        player.lives = lives
         self._last_lives = lives
-        player.score = self.score if keep_score else 0
-        player.move_sound = ServiceLocator.sounds.load(player_cfg.get("sound_move", "snd/laser.ogg"))
-        self.ecs_world.add_component(self.player_entity, player)
-        self.ecs_world.add_component(
-            self.player_entity, CScore(points=player.score)
-        )
-        self.ecs_world.add_component(self.player_entity, CSpecialAbility())
-
-        for action, key in (("PLAYER_LEFT", pygame.K_LEFT), ("PLAYER_RIGHT", pygame.K_RIGHT),
-                            ("PLAYER_UP", pygame.K_UP), ("PLAYER_DOWN", pygame.K_DOWN),
-                            ("PLAYER_SPECIAL", pygame.K_SPACE)):
-            entity = self.ecs_world.create_entity()
-            self.ecs_world.add_component(entity, CInputCommand(action, "keyboard", key))
-        fire = self.ecs_world.create_entity()
-        self.ecs_world.add_component(fire, CInputCommand("PLAYER_FIRE", "mouse", pygame.BUTTON_LEFT))
+        create_player_input_bindings(self.ecs_world, player_config.controls)
         spawner = self.ecs_world.create_entity()
         self.ecs_world.add_component(spawner, CEnemySpawner(
             level_cfg.get("enemy_spawn_events", []), enemies_cfg, level_cfg.get("dynamic_spawning")))
@@ -210,11 +201,14 @@ class GameEngine:
 
     def _update(self):
         system_input(self.ecs_world, self.events)
-        system_special_ability(self.ecs_world, self.delta_time, self.world_size)
+        system_player_commands(self.ecs_world)
         player = self.current_player()
         if player is None:
             return
-        system_player_input(self.ecs_world, self.delta_time, self.camera, self.world_size)
+        system_player_life(self.ecs_world, self.delta_time, self.explosion_config)
+        system_player_movement(self.ecs_world, self.delta_time)
+        system_player_shooting(self.ecs_world, self.delta_time)
+        system_player_special(self.ecs_world, self.delta_time)
         system_enemy_spawner(self.ecs_world, self.delta_time)
         system_base_behavior(
             self.ecs_world, self.delta_time, self.world_size
@@ -227,6 +221,8 @@ class GameEngine:
         system_hunter(self.ecs_world, self.delta_time, self.world_size)
         system_obstacle_motion(self.ecs_world, self.delta_time)
         system_moving_animation(self.ecs_world)
+        system_sprite_rotation(self.ecs_world)
+        system_player_bullet_bounds(self.ecs_world, self.camera)
         system_animation(self.ecs_world, self.delta_time)
         system_explosion_lifetime(self.ecs_world, self.delta_time)
         system_combat_collisions(
@@ -252,10 +248,10 @@ class GameEngine:
 
     def player_position(self):
         transform = self.ecs_world.try_component(self.player_entity, CTransform)
-        surface = self.ecs_world.try_component(self.player_entity, CSurface)
+        player = self.ecs_world.try_component(self.player_entity, CPlayer)
         if transform is None:
             return pygame.Vector2()
-        return transform.pos + (pygame.Vector2(surface.size) / 2 if surface else pygame.Vector2())
+        return transform.pos + (player.size / 2 if player else pygame.Vector2())
 
     def _draw(self, target=None):
         target = target or self.screen
