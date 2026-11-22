@@ -26,7 +26,7 @@ class TextScene(Scene):
 
 class InstructionsScene(TextScene):
     title = "INSTRUCCIONES"
-    lines = ("FLECHAS: MOVER", "CLICK: DISPARAR", "SPACE: ESPECIAL", "P: PAUSA")
+    lines = ("FLECHAS: MOVER", "Z / ESPACIO: DISPARAR", "X: ESPECIAL", "P: PAUSA")
 
 
 class CreditsScene(TextScene):

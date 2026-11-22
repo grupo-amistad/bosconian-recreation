@@ -21,15 +21,37 @@ class CSurface:
                 image = None
         if not image:
             size = size or pygame.Vector2(16, 16)
+            frame_count = max(1, int(frames))
             self.surf = pygame.Surface(
-                (max(1, int(size.x * frames)), max(1, int(size.y))), pygame.SRCALPHA
+                (
+                    max(1, int(size.x)) * frame_count,
+                    max(1, int(size.y)),
+                ),
+                pygame.SRCALPHA,
             )
-            fallback_color = color or pygame.Color("white")
-            for frame in range(frames):
-                frame_rect = pygame.Rect(
-                    round(frame * size.x), 0, max(1, round(size.x)), max(1, round(size.y))
+            base_color = color or pygame.Color("white")
+            for frame in range(frame_count):
+                shade = 0.7 + 0.3 * frame / max(1, frame_count - 1)
+                frame_color = pygame.Color(
+                    min(255, int(base_color.r * shade)),
+                    min(255, int(base_color.g * shade)),
+                    min(255, int(base_color.b * shade)),
+                    base_color.a,
                 )
-                pygame.draw.ellipse(self.surf, fallback_color, frame_rect)
+                frame_rect = pygame.Rect(
+                    frame * max(1, int(size.x)),
+                    0,
+                    max(1, int(size.x)),
+                    max(1, int(size.y)),
+                )
+                pygame.draw.ellipse(self.surf, frame_color, frame_rect)
+                if frame_count > 1:
+                    pygame.draw.circle(
+                        self.surf,
+                        pygame.Color("white"),
+                        (frame_rect.centerx, frame_rect.centery),
+                        max(1, min(frame_rect.size) // 5),
+                    )
         self.area = pygame.Rect(area) if area else self.surf.get_rect()
         if not image and not area:
             self.area.size = (max(1, int(size.x)), max(1, int(size.y)))

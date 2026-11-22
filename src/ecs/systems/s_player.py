@@ -103,6 +103,8 @@ def _fire_bullet(
         center - size / 2,
         direction * config["velocity"],
         pygame.Color(*[config.get("color", {"r":255,"g":255,"b":255})[k] for k in ("r", "g", "b")]), image=image,
+        hitbox_size=config.get("hitbox_size"),
+        hitbox_offset=config.get("hitbox_offset"),
     )
     world.add_component(
         bullet_entity,

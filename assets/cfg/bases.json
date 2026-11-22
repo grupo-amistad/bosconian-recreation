@@ -1,0 +1,25 @@
+{
+  "default": {
+    "size": {"x": 28, "y": 28},
+    "core_hitbox_size": {"x": 8, "y": 8},
+    "core_hitbox_offset": {"x": 10, "y": 10},
+    "core_open_color": {"r": 255, "g": 240, "b": 120},
+    "core_closed_color": {"r": 70, "g": 90, "b": 50},
+    "color": {"r": 120, "g": 180, "b": 90},
+    "health": 1,
+    "score": 1000,
+    "turret_count": 6,
+    "turret_radius": 20,
+    "turret_color": {"r": 255, "g": 220, "b": 80},
+    "turret_health": 1,
+    "turret_hitbox_size": {"x": 6, "y": 6},
+    "turret_score": 100,
+    "turret_fire_interval": 3.0,
+    "bullet_speed": 48,
+    "core_open_duration": 2.0,
+    "core_closed_duration": 5.0,
+    "e_spawn_level": 4,
+    "e_spawn_interval": 12.0,
+    "rotation_speed": 12
+  }
+}

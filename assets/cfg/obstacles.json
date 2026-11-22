@@ -1,0 +1,35 @@
+{
+  "mine": {
+    "type": "mine",
+    "size": {"x": 12, "y": 12},
+    "hitbox_size": {"x": 10, "y": 10},
+    "color": {"r": 240, "g": 80, "b": 50},
+    "destructible": true,
+    "lethal": true,
+    "health": 1,
+    "score": 50,
+    "blast_radius": 24,
+    "animations": {
+      "number_frames": 4,
+      "list": [
+        {"name": "SPIN", "start": 0, "end": 3, "framerate": 8}
+      ]
+    }
+  },
+  "rock": {
+    "type": "rock",
+    "size": {"x": 18, "y": 18},
+    "hitbox_size": {"x": 16, "y": 16},
+    "color": {"r": 110, "g": 110, "b": 120},
+    "destructible": false,
+    "lethal": false
+  },
+  "rock_mobile": {
+    "type": "rock",
+    "size": {"x": 18, "y": 18},
+    "hitbox_size": {"x": 16, "y": 16},
+    "color": {"r": 145, "g": 125, "b": 100},
+    "destructible": false,
+    "lethal": false
+  }
+}

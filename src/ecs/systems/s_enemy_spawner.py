@@ -1,14 +1,10 @@
-import math
 import random
 
 import esper
 import pygame
 
-from src.create.prefab_creator import create_square
 from src.ecs.components.c_enemy_spawner import CEnemySpawner
-from src.create.prefab_creator import create_entity, animations_from_config, animation_frame_count
-from src.ecs.components.c_tag_enemy import CTagEnemy
-from src.ecs.components.c_hunter import CHunter
+from src.create.prefab_creator import create_enemy
 from src.services import ServiceLocator
 
 
@@ -28,33 +24,8 @@ def system_enemy_spawner(world: esper.World, delta_time: float) -> None:
                     f"Unknown enemy type: {event['enemy_type']}"
                 )
 
-            speed_min = enemy_config.get("velocity_min", 0)
-            speed_max = enemy_config.get("velocity_max", speed_min)
-            speed = random.uniform(speed_min, speed_max)
-            angle = random.uniform(0, math.tau)
-            velocity = pygame.Vector2(
-                math.cos(angle) * speed,
-                math.sin(angle) * speed,
-            )
-
             pos = pygame.Vector2(event["position"]["x"], event["position"]["y"])
-            color_data = enemy_config.get("color", {"r": 100, "g": 100, "b": 255})
-            hunter = event["enemy_type"].lower() == "hunter" or enemy_config.get("type") == "hunter"
-            if hunter:
-                velocity.update(0, 0)
-            extra = CHunter(pos,
-                            enemy_config.get("aggro_distance", enemy_config.get("distance_start_chase", 180)),
-                            enemy_config.get("return_distance", enemy_config.get("distance_start_return", 260)),
-                            enemy_config.get("hunt_speed", enemy_config.get("velocity_chase", 70)),
-                            enemy_config.get("velocity_return", enemy_config.get("velocity_chase", 70)),
-                            enemy_config.get("sound_chase")) if hunter else None
-            image = enemy_config.get("image")
-            create_entity(world, pos, velocity if not hunter else pygame.Vector2(), CTagEnemy,
-                          image=image,
-                          size=pygame.Vector2(enemy_config.get("size", {}).get("x", 32), enemy_config.get("size", {}).get("y", 32)),
-                          color=pygame.Color(color_data["r"], color_data["g"], color_data["b"]),
-                          animations=animations_from_config(enemy_config),
-                          frames=animation_frame_count(enemy_config), extra=extra)
+            _spawn_enemy(world, event["enemy_type"], enemy_config, pos)
             _play_spawn_sound(enemy_config)
             event["spawned"] = True
 
@@ -99,38 +70,7 @@ def _spawn_enemy(
     enemy_config: dict,
     pos: pygame.Vector2,
 ) -> None:
-    speed_min = enemy_config.get("velocity_min", 0)
-    speed_max = enemy_config.get("velocity_max", speed_min)
-    speed = random.uniform(speed_min, speed_max)
-    angle = random.uniform(0, math.tau)
-    velocity = pygame.Vector2(math.cos(angle) * speed, math.sin(angle) * speed)
-    color_data = enemy_config.get("color", {"r": 100, "g": 100, "b": 255})
-    hunter = enemy_type.lower() == "hunter" or enemy_config.get("type") == "hunter"
-    if hunter:
-        velocity.update(0, 0)
-    extra = CHunter(
-        pos,
-        enemy_config.get("aggro_distance", enemy_config.get("distance_start_chase", 180)),
-        enemy_config.get("return_distance", enemy_config.get("distance_start_return", 260)),
-        enemy_config.get("hunt_speed", enemy_config.get("velocity_chase", 70)),
-        enemy_config.get("velocity_return", enemy_config.get("velocity_chase", 70)),
-        enemy_config.get("sound_chase"),
-    ) if hunter else None
-    create_entity(
-        world,
-        pos,
-        pygame.Vector2() if hunter else velocity,
-        CTagEnemy,
-        image=enemy_config.get("image"),
-        size=pygame.Vector2(
-            enemy_config.get("size", {}).get("x", 32),
-            enemy_config.get("size", {}).get("y", 32),
-        ),
-        color=pygame.Color(color_data["r"], color_data["g"], color_data["b"]),
-        animations=animations_from_config(enemy_config),
-        frames=animation_frame_count(enemy_config),
-        extra=extra,
-    )
+    create_enemy(world, enemy_config, pos, enemy_type)
     _play_spawn_sound(enemy_config)
 
 

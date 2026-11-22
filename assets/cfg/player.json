@@ -1,8 +1,15 @@
 {
     "image": "assets/img/Hero.png",
-    "size": {
-        "x": 16,
-        "y": 16
+    "size": {"x": 16, "y": 16},
+    "hitbox_size": {"x": 12, "y": 12},
+    "hitbox_offset": {"x": 2, "y": 2},
+    "controls": {
+        "PLAYER_LEFT": ["left", "a"],
+        "PLAYER_RIGHT": ["right", "d"],
+        "PLAYER_UP": ["up", "w"],
+        "PLAYER_DOWN": ["down", "s"],
+        "PLAYER_FIRE": ["z", "space"],
+        "PLAYER_SPECIAL": ["x"]
     },
     "input_velocity": 28
 }
