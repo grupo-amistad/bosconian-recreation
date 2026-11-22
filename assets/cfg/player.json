@@ -11,30 +11,5 @@
         "PLAYER_FIRE": ["z", "space"],
         "PLAYER_SPECIAL": ["x"]
     },
-    "movement": {
-        "max_speed": 64,
-        "cruise_speed": 32,
-        "acceleration": 160,
-        "deceleration": 96,
-        "turn_speed": 720,
-        "allow_diagonals": true,
-        "rotation_step": 45
-    },
-    "special": {
-        "uses_per_level": 3,
-        "bullet_count": 3,
-        "spread_degrees": 15,
-        "cooldown": 0.4,
-        "sound": "assets/sfx/player_special.ogg"
-    },
-    "life": {
-        "initial_lives": 4,
-        "death_duration": 1.6,
-        "explosion_count": 5,
-        "explosion_interval": 0.18,
-        "explosion_spread": 10,
-        "invulnerability": 2.0,
-        "blink_interval": 0.1,
-        "death_sound": "assets/sfx/player_death.ogg"
-    }
+    "input_velocity": 28
 }

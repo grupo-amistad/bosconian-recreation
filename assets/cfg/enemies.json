@@ -1,161 +1,81 @@
 {
-  "AsteroidA": {
-    "image": "assets/img/asteroid.png",
-    "sound": "assets/snd/asteroid.ogg",
-    "size": {"x": 16, "y": 16},
-    "hitbox_size": {"x": 14, "y": 14},
-    "velocity_min": 8,
-    "velocity_max": 15,
-    "health": 1,
-    "score": 100,
-    "behavior": "patrol"
-  },
-  "AsteroidB": {
-    "image": "assets/img/asteroid.png",
-    "sound": "assets/snd/asteroid.ogg",
-    "size": {"x": 16, "y": 16},
-    "hitbox_size": {"x": 14, "y": 14},
-    "velocity_min": 15,
-    "velocity_max": 23,
-    "health": 1,
-    "score": 150,
-    "behavior": "patrol"
-  },
-  "AsteroidC": {
-    "image": "assets/img/asteroid.png",
-    "sound": "assets/snd/asteroid.ogg",
-    "size": {"x": 16, "y": 16},
-    "hitbox_size": {"x": 14, "y": 14},
-    "velocity_min": 23,
-    "velocity_max": 30,
-    "health": 1,
-    "score": 200,
-    "behavior": "patrol"
-  },
-  "AsteroidD": {
-    "image": "assets/img/asteroid.png",
-    "sound": "assets/snd/asteroid.ogg",
-    "size": {"x": 16, "y": 16},
-    "hitbox_size": {"x": 14, "y": 14},
-    "velocity_min": 30,
-    "velocity_max": 38,
-    "health": 1,
-    "score": 250,
-    "behavior": "patrol"
-  },
-  "Hunter": {
-    "image": "assets/img/Reconnaissance plane.png",
-    "sound_chase": "assets/snd/ufo.ogg",
-    "size": {"x": 16, "y": 16},
-    "hitbox_size": {"x": 12, "y": 12},
-    "animations": {
-      "number_frames": 6,
-      "list": [
-        {"name": "MOVE", "start": 0, "end": 5, "framerate": 10},
-        {"name": "IDLE", "start": 0, "end": 0, "framerate": 1}
-      ]
+    "AsteroidA": {
+        "image": "assets/img/asteroid.png",
+        "sound": "assets/sfx/enemy_shoot.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 8,
+        "velocity_max": 15
     },
-    "velocity_chase": 23,
-    "velocity_return": 30,
-    "distance_start_chase": 48,
-    "distance_start_return": 53,
-    "health": 1,
-    "score": 300,
-    "behavior": "seek_player"
-  },
-  "I": {
-    "image": "assets/img/AikI-type.png",
-    "size": {"x": 12, "y": 12},
-    "hitbox_size": {"x": 10, "y": 10},
-    "velocity_min": 24,
-    "velocity_max": 32,
-    "health": 1,
-    "score": 100,
-    "behavior": "seek_base",
-    "turn_rate": 90
-  },
-  "P": {
-    "image": "assets/img/FluorP-type.png",
-    "size": {"x": 14, "y": 14},
-    "hitbox_size": {"x": 12, "y": 12},
-    "velocity_min": 16,
-    "velocity_max": 22,
-    "health": 2,
-    "score": 200,
-    "behavior": "patrol",
-    "turn_rate": 45,
-    "fire_interval": 3.5,
-    "bullet_speed": 48
-  },
-  "E": {
-    "image": "assets/img/EddollE-type.png",
-    "size": {"x": 16, "y": 16},
-    "hitbox_size": {"x": 14, "y": 14},
-    "velocity_min": 18,
-    "velocity_max": 24,
-    "health": 2,
-    "score": 500,
-    "behavior": "seek_player",
-    "turn_rate": 120,
-    "fire_interval": 2.5,
-    "bullet_speed": 58
-  },
-  "EnemyI": {
-    "image": "assets/img/AikI-type.png",
-    "size": {"x": 16, "y": 16},
-    "velocity_min": 10,
-    "velocity_max": 16,
-    "health": 1,
-    "score": 100,
-    "behavior": "seek_base"
-  },
-  "EnemyILeader": {
-    "image": "assets/img/AikI-type leader.png",
-    "size": {"x": 16, "y": 16},
-    "velocity_min": 12,
-    "velocity_max": 18,
-    "health": 2,
-    "score": 200,
-    "behavior": "seek_base"
-  },
-  "EnemyP": {
-    "image": "assets/img/FluorP-type.png",
-    "size": {"x": 16, "y": 16},
-    "velocity_min": 12,
-    "velocity_max": 18,
-    "health": 2,
-    "score": 200,
-    "behavior": "patrol",
-    "fire_interval": 3.5
-  },
-  "EnemyPLeader": {
-    "image": "assets/img/FluorP-type leader.png",
-    "size": {"x": 16, "y": 16},
-    "velocity_min": 14,
-    "velocity_max": 20,
-    "health": 3,
-    "score": 300,
-    "behavior": "patrol",
-    "fire_interval": 3.0
-  },
-  "EnemyE": {
-    "image": "assets/img/EddollE-type.png",
-    "size": {"x": 16, "y": 16},
-    "velocity_min": 14,
-    "velocity_max": 20,
-    "health": 2,
-    "score": 500,
-    "behavior": "seek_player",
-    "fire_interval": 2.5
-  },
-  "EnemyELeader": {
-    "image": "assets/img/EddollE-type leader.png",
-    "size": {"x": 16, "y": 16},
-    "velocity_min": 16,
-    "velocity_max": 22,
-    "health": 3,
-    "score": 700,
-    "behavior": "seek_player",
-    "fire_interval": 2.0
-  }
+    "AsteroidB": {
+        "image": "assets/img/asteroid.png",
+        "sound": "assets/sfx/enemy_shoot.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 15,
+        "velocity_max": 23
+    },
+    "AsteroidC": {
+        "image": "assets/img/asteroid.png",
+        "sound": "assets/sfx/enemy_shoot.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 23,
+        "velocity_max": 30
+    },
+    "AsteroidD": {
+        "image": "assets/img/asteroid.png",
+        "sound": "assets/sfx/enemy_shoot.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 30,
+        "velocity_max": 38
+    },
+    "Hunter": {
+        "image": "assets/img/Reconnaissance plane.png",
+        "sound_chase": "assets/sfx/ufo.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_chase": 23,
+        "velocity_return": 30,
+        "distance_start_chase": 48,
+        "distance_start_return": 53
+    },
+    "EnemyI": {
+        "image": "assets/img/AikI-type.png",
+        "sound": "assets/sfx/enemy_shoot.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 10,
+        "velocity_max": 16
+    },
+    "EnemyILeader": {
+        "image": "assets/img/AikI-type leader.png",
+        "sound": "assets/sfx/enemy_shoot.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 12,
+        "velocity_max": 18
+    },
+    "EnemyP": {
+        "image": "assets/img/FluorP-type.png",
+        "sound": "assets/sfx/enemy_shoot.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 12,
+        "velocity_max": 18
+    },
+    "EnemyPLeader": {
+        "image": "assets/img/FluorP-type leader.png",
+        "sound": "assets/sfx/enemy_shoot.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 14,
+        "velocity_max": 20
+    },
+    "EnemyE": {
+        "image": "assets/img/EddollE-type.png",
+        "sound": "assets/sfx/enemy_shoot.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 14,
+        "velocity_max": 20
+    },
+    "EnemyELeader": {
+        "image": "assets/img/EddollE-type leader.png",
+        "sound": "assets/sfx/enemy_shoot.ogg",
+        "size": {"x": 16, "y": 16},
+        "velocity_min": 16,
+        "velocity_max": 22
+    }
 }

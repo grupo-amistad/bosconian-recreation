@@ -1,0 +1,29 @@
+{
+    "volumes": {
+        "music": 0.5,
+        "sfx": 0.7
+    },
+    "music": {
+        "menu": "assets/mus/exploratig_the_cosmos_1_sub_38_bit.ogg",
+        "instructions": "assets/mus/night_tune3.ogg",
+        "credits": "assets/mus/night_tune3.ogg",
+        "alert_red": "assets/mus/intense_momentloop.ogg",
+        "victory": "assets/mus/starshooterv2.1.ogg",
+        "defeat": "assets/mus/zero2.ogg",
+        "default_level": "assets/mus/delayed_chips.ogg"
+    },
+    "sfx": {
+        "player_shoot": "assets/sfx/player_shoot.ogg",
+        "player_special": "assets/sfx/player_special.ogg",
+        "player_death": "assets/sfx/player_death.ogg",
+        "extra_life": "assets/sfx/extra_life.ogg",
+        "enemy_shoot": "assets/sfx/enemy_shoot.ogg",
+        "enemy_explosion": "assets/sfx/enemy_explosion.ogg",
+        "mine_explosion": "assets/sfx/mine_explosion.ogg",
+        "base_explosion": "assets/sfx/base_explosion.ogg",
+        "alert_yellow": "assets/sfx/alert_yellow.ogg",
+        "alert_red": "assets/sfx/alert_red.ogg",
+        "menu_select": "assets/sfx/menu_select.ogg",
+        "round_start": "assets/sfx/pickupCoin.ogg"
+    }
+}

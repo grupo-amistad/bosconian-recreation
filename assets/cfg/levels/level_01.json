@@ -1,161 +1,238 @@
 {
+  "level": 1,
+  "music": "assets/mus/starshooterv2.1.ogg",
+  "alert_red_time": 90.0,
+  "world_size": {
+    "w": 1024,
+    "h": 1024
+  },
   "player_spawn": {
     "position": {
-      "x": 120,
-      "y": 160
+      "x": 512,
+      "y": 512
     },
     "max_bullets": 4,
     "special_ability": false
   },
   "dynamic_spawning": {
-    "start_time": 12.0,
-    "interval": 3.0,
+    "start_time": 11.3,
+    "interval": 4.0,
     "initial_count": 2,
-    "increase_every": 3,
+    "increase_every": 4,
     "increase_amount": 1,
     "enemy_types": [
-      "AsteroidA",
-      "AsteroidB",
-      "AsteroidC",
-      "Hunter",
       "EnemyI",
-      "EnemyP",
-      "EnemyE"
+      "EnemyP"
     ],
     "spawn_area": {
-      "min_x": 16,
-      "max_x": 240,
-      "min_y": 16,
-      "max_y": 192
+      "min_x": 32,
+      "max_x": 992,
+      "min_y": 32,
+      "max_y": 992
     }
   },
   "enemy_spawn_events": [
     {
-      "time": 0.0,
-      "enemy_type": "I",
-      "position": {"x": 200, "y": 42}
-    },
-    {
-      "time": 1.0,
-      "enemy_type": "P",
-      "position": {"x": 220, "y": 150}
-    },
-    {
-      "time": 0.0,
-      "enemy_type": "Hunter",
-      "position": {
-        "x": 149,
-        "y": 69
-      }
-    },
-    {
-      "time": 0.0,
-      "enemy_type": "Hunter",
-      "position": {
-        "x": 81,
-        "y": 116
-      }
-    },
-    {
-      "time": 0.0,
-      "enemy_type": "Hunter",
-      "position": {
-        "x": 11,
-        "y": 69
-      }
-    },
-    {
-      "time": 0.0,
-      "enemy_type": "Hunter",
-      "position": {
-        "x": 81,
-        "y": 8
-      }
-    },
-    {
-      "time": 3.0,
-      "enemy_type": "AsteroidA",
-      "position": {
-        "x": 13,
-        "y": 19
-      }
-    },
-    {
-      "time": 6.0,
-      "enemy_type": "EnemyI",
-      "position": {
-        "x": 133,
-        "y": 77
-      }
-    },
-    {
-      "time": 9.0,
-      "enemy_type": "AsteroidC",
-      "position": {
-        "x": 53,
-        "y": 116
-      }
-    },
-    {
-      "time": 12.0,
+      "time": 2.0,
       "enemy_type": "EnemyP",
       "position": {
-        "x": 160,
-        "y": 19
+        "x": 630,
+        "y": 697
       }
     },
     {
-      "time": 14.0,
-      "enemy_type": "AsteroidA",
-      "position": {
-        "x": 24,
-        "y": 69
-      }
-    },
-    {
-      "time": 16.0,
-      "enemy_type": "AsteroidB",
-      "position": {
-        "x": 53,
-        "y": 77
-      }
-    },
-    {
-      "time": 18.0,
+      "time": 4.9,
       "enemy_type": "EnemyE",
       "position": {
-        "x": 64,
-        "y": 35
+        "x": 400,
+        "y": 701
       }
     },
     {
-      "time": 20.0,
-      "enemy_type": "AsteroidD",
+      "time": 7.8,
+      "enemy_type": "EnemyI",
       "position": {
-        "x": 144,
-        "y": 100
+        "x": 292,
+        "y": 499
+      }
+    },
+    {
+      "time": 10.6,
+      "enemy_type": "EnemyP",
+      "position": {
+        "x": 423,
+        "y": 310
+      }
+    },
+    {
+      "time": 13.5,
+      "enemy_type": "EnemyE",
+      "position": {
+        "x": 651,
+        "y": 341
+      }
+    },
+    {
+      "time": 16.4,
+      "enemy_type": "EnemyI",
+      "position": {
+        "x": 726,
+        "y": 559
+      }
+    },
+    {
+      "time": 19.3,
+      "enemy_type": "EnemyP",
+      "position": {
+        "x": 567,
+        "y": 724
       }
     }
   ],
-  "level": 1,
-  "world_size": {
-    "w": 256,
-    "h": 208
-  },
   "bases": [
     {
-      "type": "default",
-      "position": {"x": 112, "y": 70},
-      "orientation": 0
+      "id": "base_1_1",
+      "position": {
+        "x": 840,
+        "y": 632
+      },
+      "orientation": "vertical",
+      "core_type": "normal",
+      "turrets": 6
+    },
+    {
+      "id": "base_1_2",
+      "position": {
+        "x": 312,
+        "y": 678
+      },
+      "orientation": "horizontal",
+      "core_type": "normal",
+      "turrets": 6
+    },
+    {
+      "id": "base_1_3",
+      "position": {
+        "x": 451,
+        "y": 167
+      },
+      "orientation": "vertical",
+      "core_type": "normal",
+      "turrets": 6
     }
   ],
   "obstacles": [
-    {"type": "mine", "position": {"x": 52, "y": 54}},
-    {"type": "rock", "position": {"x": 42, "y": 152}},
     {
-      "type": "rock_mobile",
-      "position": {"x": 208, "y": 102},
-      "velocity": {"x": 10, "y": -6}
+      "type": "rock",
+      "position": {
+        "x": 650,
+        "y": 628
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 258,
+        "y": 522
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 743,
+        "y": 281
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 493,
+        "y": 911
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 208,
+        "y": 148
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 716,
+        "y": 539
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 427,
+        "y": 815
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 589,
+        "y": 168
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 723,
+        "y": 880
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 361,
+        "y": 464
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 721,
+        "y": 415
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 394,
+        "y": 792
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 528,
+        "y": 301
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 910,
+        "y": 721
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 335,
+        "y": 558
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 650,
+        "y": 296
+      }
     }
   ]
 }

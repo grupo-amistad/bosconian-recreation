@@ -1,14 +1,6 @@
 {
-    "size": {"x": 3, "y": 3},
-    "hitbox_size": {"x": 3, "y": 3},
-    "color": {"r": 255, "g": 255, "b": 255},
-    "speed": 180,
-    "range": 120,
-    "cooldown": 0.12,
-    "max_bullets": 4,
-    "autofire": false,
-    "inherit_ship_velocity": true,
-    "muzzle_offset": 6,
-    "offscreen_margin": 8,
+    "image": "assets/img/bullet.png",
+    "size": {"x": 4, "y": 4},
+    "velocity": 60,
     "sound": "assets/sfx/player_shoot.ogg"
 }

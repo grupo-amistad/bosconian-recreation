@@ -1,18 +1,135 @@
 {
-    "font": "fnt/PressStart2P.ttf",
-    "size": 5,
-    "title": "BOSCONIAN - PROTOTIPO",
-    "instructions": "Flechas: mover | Click: disparar | P: pausa | SPACE: especial",
-    "pause_text": "",
-    "special_label": "ESPECIAL",
-    "title_color": [255, 255, 255],
-    "instructions_color": [255, 235, 0],
-    "pause_color": [255, 220, 80],
-    "special_color": [255, 255, 255],
-    "special_status_color": [0, 255, 0],
-    "title_position": [8, 8],
-    "instructions_position": [8, 20],
-    "pause_position": [56, 100],
-    "special_position": [8, 178],
-    "special_status_position": [8, 190]
+  "font": "assets/fnt/PressStart2P.ttf",
+  "size": 8,
+  "title": "BOSCONIAN",
+  "instructions": "FLECHAS: MOVER | Z: DISPARAR | X/SPACE: ESPECIAL | P: PAUSA",
+  "pause_text": "PAUSA",
+  "special_label": "ESPECIAL",
+  "title_color": [255, 255, 255],
+  "instructions_color": [255, 235, 0],
+  "pause_color": [255, 220, 80],
+  "special_color": [255, 255, 255],
+  "special_status_color": [0, 255, 0],
+  "title_position": [8, 8],
+  "instructions_position": [8, 20],
+  "pause_position": [104, 98],
+  "special_position": [8, 178],
+  "special_status_position": [8, 190],
+  "hud": {
+    "panel_rect": [184, 0, 72, 208],
+    "panel_bg_color": [12, 12, 24],
+    "panel_border_color": [65, 105, 225],
+    "font_size": 8,
+    "high_score_label": "HI-SCORE",
+    "high_score_label_pos": [188, 6],
+    "high_score_value_pos": [188, 17],
+    "score_label": "1UP",
+    "score_label_pos": [188, 32],
+    "score_value_pos": [188, 43],
+    "alert_label_pos": [188, 58],
+    "round_label": "ROUND",
+    "round_label_pos": [188, 150],
+    "round_value_pos": [236, 150],
+    "lives_label": "SHIPS",
+    "lives_label_pos": [188, 164],
+    "lives_icons_pos": [188, 176],
+    "special_indicator_pos": [188, 194]
+  },
+  "minimap": {
+    "rect": [190, 74, 60, 68],
+    "bg_color": [0, 16, 32],
+    "border_color": [65, 105, 225],
+    "player_color": [255, 255, 255],
+    "base_color": [0, 255, 80],
+    "formation_color": [255, 80, 80],
+    "marker_size": 2
+  },
+  "alerts": {
+    "GREEN": {
+      "text": "CONDITION GREEN",
+      "short_text": "GREEN",
+      "color": [0, 220, 80]
+    },
+    "YELLOW": {
+      "text": "CONDITION YELLOW",
+      "short_text": "YELLOW",
+      "color": [255, 220, 0]
+    },
+    "RED": {
+      "text": "CONDITION RED",
+      "short_text": "RED!",
+      "color": [255, 40, 40]
+    }
+  },
+  "menus": {
+    "title_screen": {
+      "logo_image": "assets/img/titulo.png",
+      "logo_position": [28, 24],
+      "options": [
+        {
+          "id": "play",
+          "label": "JUGAR"
+        },
+        {
+          "id": "instructions",
+          "label": "INSTRUCCIONES"
+        },
+        {
+          "id": "credits",
+          "label": "CREDITOS"
+        },
+        {
+          "id": "quit",
+          "label": "SALIR"
+        }
+      ],
+      "options_start_pos": [76, 118],
+      "options_spacing": 14,
+      "selected_color": [255, 235, 0],
+      "normal_color": [255, 255, 255],
+      "footer": "PRESIONA ENTER O Z"
+    },
+    "instructions_screen": {
+      "header": "INSTRUCCIONES",
+      "lines": [
+        "FLECHAS : MOVER NAVE",
+        "Z / CLICK : DISPARAR",
+        "X / SPACE : DISPARO ESPECIAL",
+        "P : PAUSAR PARTIDA",
+        "",
+        "DESTRUYE TODAS LAS BASES",
+        "ENEMIGAS PARA AVANZAR",
+        "DE RONDA.",
+        "",
+        "CUIDADO CON LA ALERTA ROJA!"
+      ],
+      "back_prompt": "ESC O ENTER PARA VOLVER"
+    },
+    "credits_screen": {
+      "header": "CREDITOS",
+      "lines": [
+        "BOSCONIAN RECREATION",
+        "PROYECTO FINAL",
+        "",
+        "EQUIPO DE DESARROLLO:",
+        "- MANUEL PRIETO (ARQUITECTURA)",
+        "- INTEGRANTE 2 (JUGADOR)",
+        "- INTEGRANTE 3 (COMBATE)",
+        "- CAMILO INOUE (MUNDO Y UI)",
+        "",
+        "BASADO EN BOSCONIAN (NAMCO)"
+      ],
+      "back_prompt": "ESC O ENTER PARA VOLVER"
+    },
+    "victory_screen": {
+      "header": "MISION COMPLETADA!",
+      "subtitle": "HAS SUPERADO LAS 10 RONDAS",
+      "prompt": "ENTER: MENU | R: JUGAR OTRA VEZ"
+    },
+    "defeat_screen": {
+      "header": "GAME OVER",
+      "subtitle": "TU NAVE FUE DESTRUIDA",
+      "prompt": "ENTER: MENU | R: REINTENTAR"
+    }
+  }
 }

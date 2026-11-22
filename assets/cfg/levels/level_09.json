@@ -1,0 +1,665 @@
+{
+  "level": 9,
+  "music": "assets/mus/zero2.ogg",
+  "alert_red_time": 50.0,
+  "world_size": {
+    "w": 1024,
+    "h": 1024
+  },
+  "player_spawn": {
+    "position": {
+      "x": 512,
+      "y": 512
+    },
+    "max_bullets": 4,
+    "special_ability": true
+  },
+  "dynamic_spawning": {
+    "start_time": 5.7,
+    "interval": 2.2,
+    "initial_count": 5,
+    "increase_every": 2,
+    "increase_amount": 1,
+    "enemy_types": [
+      "EnemyI",
+      "EnemyP",
+      "EnemyE",
+      "EnemyILeader",
+      "EnemyPLeader",
+      "EnemyELeader",
+      "Hunter"
+    ],
+    "spawn_area": {
+      "min_x": 32,
+      "max_x": 992,
+      "min_y": 32,
+      "max_y": 992
+    }
+  },
+  "enemy_spawn_events": [
+    {
+      "time": 2.0,
+      "enemy_type": "EnemyE",
+      "position": {
+        "x": 311,
+        "y": 602
+      }
+    },
+    {
+      "time": 3.9,
+      "enemy_type": "EnemyILeader",
+      "position": {
+        "x": 340,
+        "y": 374
+      }
+    },
+    {
+      "time": 5.8,
+      "enemy_type": "EnemyPLeader",
+      "position": {
+        "x": 556,
+        "y": 296
+      }
+    },
+    {
+      "time": 7.8,
+      "enemy_type": "EnemyELeader",
+      "position": {
+        "x": 724,
+        "y": 454
+      }
+    },
+    {
+      "time": 9.7,
+      "enemy_type": "Hunter",
+      "position": {
+        "x": 659,
+        "y": 674
+      }
+    },
+    {
+      "time": 11.6,
+      "enemy_type": "EnemyI",
+      "position": {
+        "x": 433,
+        "y": 717
+      }
+    },
+    {
+      "time": 13.5,
+      "enemy_type": "EnemyP",
+      "position": {
+        "x": 293,
+        "y": 535
+      }
+    },
+    {
+      "time": 15.4,
+      "enemy_type": "EnemyE",
+      "position": {
+        "x": 391,
+        "y": 327
+      }
+    },
+    {
+      "time": 17.4,
+      "enemy_type": "EnemyILeader",
+      "position": {
+        "x": 621,
+        "y": 321
+      }
+    },
+    {
+      "time": 19.3,
+      "enemy_type": "EnemyPLeader",
+      "position": {
+        "x": 731,
+        "y": 523
+      }
+    },
+    {
+      "time": 21.2,
+      "enemy_type": "EnemyELeader",
+      "position": {
+        "x": 601,
+        "y": 712
+      }
+    },
+    {
+      "time": 23.1,
+      "enemy_type": "Hunter",
+      "position": {
+        "x": 373,
+        "y": 683
+      }
+    },
+    {
+      "time": 25.0,
+      "enemy_type": "EnemyI",
+      "position": {
+        "x": 296,
+        "y": 466
+      }
+    },
+    {
+      "time": 27.0,
+      "enemy_type": "EnemyP",
+      "position": {
+        "x": 455,
+        "y": 299
+      }
+    },
+    {
+      "time": 28.9,
+      "enemy_type": "EnemyE",
+      "position": {
+        "x": 675,
+        "y": 364
+      }
+    }
+  ],
+  "bases": [
+    {
+      "id": "base_9_1",
+      "position": {
+        "x": 122,
+        "y": 508
+      },
+      "orientation": "vertical",
+      "core_type": "animated",
+      "turrets": 6
+    },
+    {
+      "id": "base_9_2",
+      "position": {
+        "x": 301,
+        "y": 298
+      },
+      "orientation": "horizontal",
+      "core_type": "animated",
+      "turrets": 6
+    },
+    {
+      "id": "base_9_3",
+      "position": {
+        "x": 515,
+        "y": 122
+      },
+      "orientation": "vertical",
+      "core_type": "animated",
+      "turrets": 6
+    },
+    {
+      "id": "base_9_4",
+      "position": {
+        "x": 725,
+        "y": 301
+      },
+      "orientation": "horizontal",
+      "core_type": "animated",
+      "turrets": 6
+    },
+    {
+      "id": "base_9_5",
+      "position": {
+        "x": 901,
+        "y": 515
+      },
+      "orientation": "vertical",
+      "core_type": "animated",
+      "turrets": 6
+    },
+    {
+      "id": "base_9_6",
+      "position": {
+        "x": 722,
+        "y": 725
+      },
+      "orientation": "horizontal",
+      "core_type": "animated",
+      "turrets": 6
+    },
+    {
+      "id": "base_9_7",
+      "position": {
+        "x": 508,
+        "y": 901
+      },
+      "orientation": "vertical",
+      "core_type": "animated",
+      "turrets": 6
+    },
+    {
+      "id": "base_9_8",
+      "position": {
+        "x": 298,
+        "y": 722
+      },
+      "orientation": "horizontal",
+      "core_type": "normal",
+      "turrets": 6
+    }
+  ],
+  "obstacles": [
+    {
+      "type": "rock",
+      "position": {
+        "x": 680,
+        "y": 514
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 474,
+        "y": 816
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 544,
+        "y": 198
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 742,
+        "y": 823
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 59,
+        "y": 424
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 677,
+        "y": 410
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 438,
+        "y": 768
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 360,
+        "y": 207
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 897,
+        "y": 660
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 376,
+        "y": 565
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 608,
+        "y": 315
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 594,
+        "y": 792
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 199,
+        "y": 323
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 941,
+        "y": 425
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 411,
+        "y": 650
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 484,
+        "y": 269
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 894,
+        "y": 864
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 266,
+        "y": 665
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 845,
+        "y": 190
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 499,
+        "y": 707
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 487,
+        "y": 446
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 66,
+        "y": 707
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 167,
+        "y": 743
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 546,
+        "y": 368
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 618,
+        "y": 705
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 233,
+        "y": 417
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 847,
+        "y": 363
+      }
+    },
+    {
+      "type": "rock",
+      "position": {
+        "x": 335,
+        "y": 914
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 456,
+        "y": 348
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 727,
+        "y": 630
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 202,
+        "y": 588
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 729,
+        "y": 185
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 583,
+        "y": 971
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 357,
+        "y": 388
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 782,
+        "y": 494
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 418,
+        "y": 904
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 664,
+        "y": 239
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 610,
+        "y": 624
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 290,
+        "y": 487
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 894,
+        "y": 481
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 439,
+        "y": 873
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 282,
+        "y": 134
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 679,
+        "y": 561
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 289,
+        "y": 621
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 628,
+        "y": 212
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 654,
+        "y": 879
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 93,
+        "y": 304
+      }
+    },
+    {
+      "type": "mine",
+      "position": {
+        "x": 704,
+        "y": 456
+      }
+    },
+    {
+      "type": "indestructible_rock",
+      "position": {
+        "x": 370,
+        "y": 745
+      }
+    },
+    {
+      "type": "indestructible_rock",
+      "position": {
+        "x": 445,
+        "y": 172
+      }
+    },
+    {
+      "type": "indestructible_rock",
+      "position": {
+        "x": 849,
+        "y": 760
+      }
+    },
+    {
+      "type": "indestructible_rock",
+      "position": {
+        "x": 360,
+        "y": 528
+      }
+    },
+    {
+      "type": "indestructible_rock",
+      "position": {
+        "x": 660,
+        "y": 343
+      }
+    },
+    {
+      "type": "indestructible_rock",
+      "position": {
+        "x": 517,
+        "y": 809
+      }
+    },
+    {
+      "type": "indestructible_rock",
+      "position": {
+        "x": 400,
+        "y": 387
+      }
+    },
+    {
+      "type": "indestructible_rock",
+      "position": {
+        "x": 170,
+        "y": 686
+      }
+    },
+    {
+      "type": "indestructible_rock",
+      "position": {
+        "x": 373,
+        "y": 622
+      }
+    },
+    {
+      "type": "indestructible_rock",
+      "position": {
+        "x": 550,
+        "y": 265
+      }
+    },
+    {
+      "type": "indestructible_rock",
+      "position": {
+        "x": 834,
+        "y": 925
+      }
+    },
+    {
+      "type": "indestructible_rock",
+      "position": {
+        "x": 127,
+        "y": 416
+      }
+    }
+  ]
+}
