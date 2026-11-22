@@ -1,0 +1,27 @@
+{
+    "initial_lives": 4,
+    "max_lives": 6,
+    "default_high_score": 20000,
+    "extra_life": {
+        "first_threshold": 10000,
+        "repeat_every": 25000
+    },
+    "points": {
+        "EnemyI": 50,
+        "EnemyILeader": 100,
+        "EnemyP": 60,
+        "EnemyPLeader": 120,
+        "EnemyE": 70,
+        "EnemyELeader": 140,
+        "Hunter": 500,
+        "AsteroidA": 10,
+        "AsteroidB": 10,
+        "AsteroidC": 10,
+        "AsteroidD": 10,
+        "rock": 10,
+        "mine": 20,
+        "turret": 200,
+        "base_core": 1500,
+        "round_clear_bonus": 500
+    }
+}

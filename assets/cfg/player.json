@@ -4,6 +4,5 @@
         "x": 16,
         "y": 16
     },
-    "input_velocity": 28,
-    "sound_move": "assets/snd/laser.ogg"
+    "input_velocity": 28
 }

@@ -1,15 +1,62 @@
 {
-    "image": "assets/img/explosion.png",
-    "sound": "assets/snd/explosion.ogg",
-    "animations": {
-        "number_frames": 4,
-        "list": [
-            {
-                "name": "EXPLODE",
-                "start": 0,
-                "end": 3,
-                "framerate": 16
-            }
-        ]
+    "enemy": {
+        "image": "assets/img/explosion_orange.png",
+        "sound": "assets/sfx/enemy_explosion.ogg",
+        "animations": {
+            "number_frames": 5,
+            "list": [
+                {
+                    "name": "EXPLODE",
+                    "start": 0,
+                    "end": 4,
+                    "framerate": 16
+                }
+            ]
+        }
+    },
+    "mine": {
+        "image": "assets/img/explosion_green.png",
+        "sound": "assets/sfx/mine_explosion.ogg",
+        "animations": {
+            "number_frames": 5,
+            "list": [
+                {
+                    "name": "EXPLODE",
+                    "start": 0,
+                    "end": 4,
+                    "framerate": 18
+                }
+            ]
+        }
+    },
+    "base": {
+        "image": "assets/img/explosion_orange.png",
+        "sound": "assets/sfx/base_explosion.ogg",
+        "animations": {
+            "number_frames": 5,
+            "list": [
+                {
+                    "name": "EXPLODE",
+                    "start": 0,
+                    "end": 4,
+                    "framerate": 12
+                }
+            ]
+        }
+    },
+    "player": {
+        "image": "assets/img/explosion_orange.png",
+        "sound": "assets/sfx/player_death.ogg",
+        "animations": {
+            "number_frames": 5,
+            "list": [
+                {
+                    "name": "EXPLODE",
+                    "start": 0,
+                    "end": 4,
+                    "framerate": 14
+                }
+            ]
+        }
     }
 }

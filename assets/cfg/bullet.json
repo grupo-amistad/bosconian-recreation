@@ -2,5 +2,5 @@
     "image": "assets/img/bullet.png",
     "size": {"x": 4, "y": 4},
     "velocity": 60,
-    "sound": "assets/snd/laser.ogg"
+    "sound": "assets/sfx/player_shoot.ogg"
 }
