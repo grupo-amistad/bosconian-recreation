@@ -221,7 +221,7 @@ def system_obstacle_motion(world: esper.World, delta_time: float) -> None:
         for entity, (_, transform, hitbox, obstacle) in world.get_components(
             CTagObstacle, CTransform, CHitBox, CObstacleState
         )
-        if obstacle.kind == "rock"
+        if obstacle.kind in {"rock", "rock_mobile", "indestructible_rock"}
     ]
     for _, (_, base_transform, base_hitbox) in world.get_components(
         CTagBase, CTransform, CHitBox
@@ -245,6 +245,7 @@ def system_combat_collisions(
     world: esper.World,
     explosion_config: dict | None = None,
     world_size: pygame.Vector2 | None = None,
+    score_table: dict[str, int] | None = None,
 ) -> None:
     destroyed: set[int] = set()
     bullets = list(world.get_components(CTagBullet, CTransform, CHitBox))
@@ -287,9 +288,9 @@ def system_combat_collisions(
                     continue
                 if _damage(
                     world, target_id, stats, 1, bullet_rect.center,
-                    explosion_config, destroyed
+                    explosion_config, destroyed, score_table
                 ):
-                    _score(world, stats.score)
+                    _score(world, stats.score, score_table, stats.kind)
                 world.delete_entity(bullet_id)
                 destroyed.add(bullet_id)
                 hit = True
@@ -305,9 +306,9 @@ def system_combat_collisions(
                 continue
             if state.core_open and _damage(
                 world, base_id, stats, stats.health, bullet_rect.center,
-                explosion_config, destroyed
+                explosion_config, destroyed, score_table
             ):
-                _score(world, stats.score)
+                _score(world, stats.score, score_table, "base_core")
             world.delete_entity(bullet_id)
             destroyed.add(bullet_id)
             hit = True
@@ -323,12 +324,12 @@ def system_combat_collisions(
                 if stats:
                     if _damage(
                         world, obstacle_id, stats, stats.health, bullet_rect.center,
-                        explosion_config, destroyed
+                        explosion_config, destroyed, score_table
                     ):
-                        _score(world, obstacle.score)
+                        _score(world, obstacle.score, score_table, obstacle.kind)
                 else:
                     _destroy(world, obstacle_id, bullet_rect.center, explosion_config, destroyed)
-                    _score(world, obstacle.score)
+                    _score(world, obstacle.score, score_table, obstacle.kind)
             world.delete_entity(bullet_id)
             destroyed.add(bullet_id)
             break
@@ -357,7 +358,7 @@ def system_combat_collisions(
             if obstacle.destructible:
                 stats = world.try_component(obstacle_id, CCombatStats)
                 if stats:
-                    _damage(
+                    if _damage(
                         world,
                         obstacle_id,
                         stats,
@@ -365,7 +366,9 @@ def system_combat_collisions(
                         _rect(transform, hitbox).center,
                         explosion_config,
                         destroyed,
-                    )
+                        score_table,
+                    ):
+                        _score(world, obstacle.score, score_table, obstacle.kind)
                 else:
                     _destroy(
                         world,
@@ -374,6 +377,7 @@ def system_combat_collisions(
                         explosion_config,
                         destroyed,
                     )
+                    _score(world, obstacle.score, score_table, obstacle.kind)
             world.delete_entity(bullet_id)
             destroyed.add(bullet_id)
             break
@@ -418,7 +422,7 @@ def system_combat_collisions(
                 )
                 if obstacle.destructible:
                     _destroy(world, obstacle_id, _rect(transform, hitbox).center, explosion_config, destroyed)
-                    _score(world, obstacle.score)
+                    _score(world, obstacle.score, score_table, obstacle.kind)
                 break
             _resolve_solid_collision(
                 world, player_id, player_transform, player_hitbox, transform, hitbox
@@ -480,7 +484,15 @@ def _overlaps(
     )
 
 
-def _score(world: esper.World, points: int) -> None:
+def _score(
+    world: esper.World,
+    points: int,
+    score_table: dict[str, int] | None = None,
+    score_key: str | None = None,
+) -> None:
+    if score_table is not None and score_key:
+        score_key = "base_core" if score_key == "base" else score_key
+        points = score_table.get(score_key, points)
     score = next(iter(world.get_components(CScore)), None)
     if score and points:
         score[1][0].points += points
@@ -497,6 +509,7 @@ def _damage(
     position,
     explosion_config: dict | None,
     destroyed: set[int],
+    score_table: dict[str, int] | None = None,
 ) -> bool:
     stats.health -= damage
     if stats.health <= 0:
@@ -511,7 +524,12 @@ def _damage(
                         base_stats = world.try_component(turret.base_id, CCombatStats)
                         if base_stats:
                             _destroy(world, turret.base_id, position, explosion_config, destroyed)
-                            _score(world, base_stats.score)
+                            _score(
+                                world,
+                                base_stats.score,
+                                score_table,
+                                "base_core",
+                            )
         return True
     return False
 

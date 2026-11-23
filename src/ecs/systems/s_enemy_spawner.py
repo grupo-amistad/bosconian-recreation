@@ -8,7 +8,11 @@ from src.create.prefab_creator import create_enemy
 from src.services import ServiceLocator
 
 
-def system_enemy_spawner(world: esper.World, delta_time: float) -> None:
+def system_enemy_spawner(
+    world: esper.World,
+    delta_time: float,
+    spawn_rate_multiplier: float = 1.0,
+) -> None:
     components = world.get_components(CEnemySpawner)
 
     for _, (spawner,) in components:
@@ -26,14 +30,15 @@ def system_enemy_spawner(world: esper.World, delta_time: float) -> None:
 
             pos = pygame.Vector2(event["position"]["x"], event["position"]["y"])
             _spawn_enemy(world, event["enemy_type"], enemy_config, pos)
-            _play_spawn_sound(enemy_config)
             event["spawned"] = True
 
         dynamic = spawner.dynamic_config
         if not dynamic or spawner.elapsed_time < spawner.next_wave_time:
             continue
 
-        interval = max(1.0, dynamic.get("interval", 6.0))
+        interval = max(0.1, dynamic.get("interval", 6.0)) / max(
+            1.0, spawn_rate_multiplier
+        )
         initial_count = dynamic.get("initial_count", 2)
         increase_every = max(1, dynamic.get("increase_every", 3))
         increase_amount = dynamic.get("increase_amount", 1)
