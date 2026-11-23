@@ -11,6 +11,13 @@ from src.create.prefab_creator import (
     create_obstacle,
     create_player,
 )
+
+from src.ecs.components.c_alert import CAlert
+from src.ecs.systems.s_alert import system_alert
+from src.ecs.systems.s_score import system_score
+from src.ui.alert_system import AlertController
+from src.ui.hud import HUD
+from src.ui.score import ScoreManager
 from src.ecs.components.c_input_command import CInputCommand
 from src.ecs.components.c_player import CPlayer
 from src.ecs.components.c_combat import CScore
@@ -99,7 +106,10 @@ class GameEngine:
         self.world_size = pygame.Vector2(size)
         self.player_entity = None
         self._last_lives = 4
-        self._level_base_count = 0
+        save_path = Path(__file__).resolve().parents[2] / "save" / "highscore.json"
+        self.score_manager = ScoreManager(save_path=save_path)
+        self.alert_controller = AlertController()
+        self.hud = HUD(panel_width=80)
 
     def draw_lines(self, target, lines, y):
         font = ServiceLocator.fonts.load("fnt/PressStart2P.ttf", 7)
@@ -159,6 +169,11 @@ class GameEngine:
         spawner = self.ecs_world.create_entity()
         self.ecs_world.add_component(spawner, CEnemySpawner(
             level_cfg.get("enemy_spawn_events", []), enemies_cfg, level_cfg.get("dynamic_spawning")))
+        
+        alert_ent = self.ecs_world.create_entity()
+        c_alert = CAlert(red_threshold=float(level_cfg.get("alert_red_time", 90.0)))
+        self.alert_controller.reset(c_alert, red_threshold=c_alert.red_threshold)
+        self.ecs_world.add_component(alert_ent, c_alert)
 
         for base_entry in level_cfg.get("bases", []):
             base_type = base_entry.get("type", "default")
@@ -201,6 +216,8 @@ class GameEngine:
         self.lives_lost = 0
         self.continues_used = 0
         self.start_game(lives=4, keep_score=False)
+        self.score_manager.reset_for_new_game()
+        lives = self.score_manager.initial_lives
 
     def complete_level(self):
         if self.level >= 10:
@@ -261,18 +278,9 @@ class GameEngine:
             if player.dead:
                 self.stop_music()
                 self.scene_manager.request_change(ContinueScene(self))
-                return
-
-            # A level ends only after it had bases and every base has been
-            # destroyed. Empty or malformed level configs must not auto-win.
-            if self._level_is_cleared():
-                self.complete_level()
-
-    def _level_is_cleared(self):
-        """Return whether every base configured for this level was destroyed."""
-        if self._level_base_count <= 0:
-            return False
-        return not any(self.ecs_world.get_component(CTagBase))
+            
+        system_score(self.ecs_world, self.score_manager)
+        system_alert(self.ecs_world, self.delta_time, self.alert_controller)
 
     def player_position(self):
         transform = self.ecs_world.try_component(self.player_entity, CTransform)
@@ -286,7 +294,14 @@ class GameEngine:
         target.fill(self.bg_color)
         self.starfield.draw(target)
         system_rendering(self.ecs_world, target, self.camera)
-        self._draw_hud(target)
+        self.hud.draw(target,
+            self.ecs_world,
+            self.world_size,
+            self.player_position(),
+            self.level,
+            self.score_manager,
+            self.alert_controller,
+            self.player_entity)
 
     def _draw_hud(self, target):
         panel_x = self.playfield_width

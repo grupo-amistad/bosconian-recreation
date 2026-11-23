@@ -16,8 +16,8 @@
   },
   "dynamic_spawning": {
     "start_time": 11.3,
-    "interval": 4.0,
-    "initial_count": 2,
+    "interval": 10.0,
+    "initial_count": 1,
     "increase_every": 4,
     "increase_amount": 1,
     "enemy_types": [
