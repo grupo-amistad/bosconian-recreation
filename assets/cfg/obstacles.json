@@ -20,6 +20,15 @@
     "destructible": false,
     "lethal": false
   },
+  "indestructible_rock": {
+    "type": "indestructible_rock",
+    "image": "assets/img/asteroid.png",
+    "size": {"x": 18, "y": 18},
+    "hitbox_size": {"x": 16, "y": 16},
+    "color": {"r": 110, "g": 110, "b": 120},
+    "destructible": false,
+    "lethal": false
+  },
   "rock_mobile": {
     "type": "rock",
     "image": "assets/img/asteroid.png",

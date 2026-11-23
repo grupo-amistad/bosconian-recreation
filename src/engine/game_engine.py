@@ -22,6 +22,7 @@ from src.ecs.components.c_input_command import CInputCommand
 from src.ecs.components.c_player import CPlayer
 from src.ecs.components.c_combat import CScore
 from src.ecs.components.c_combat import CTagBase
+from src.ecs.components.c_tag_enemy import CTagEnemy
 from src.ecs.components.c_special_ability import CSpecialAbility
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
@@ -106,6 +107,7 @@ class GameEngine:
         self.world_size = pygame.Vector2(size)
         self.player_entity = None
         self._last_lives = 4
+        self._level_transition_started = False
         save_path = Path(__file__).resolve().parents[2] / "save" / "highscore.json"
         self.score_manager = ScoreManager(save_path=save_path)
         self.alert_controller = AlertController()
@@ -141,6 +143,7 @@ class GameEngine:
 
     def start_game(self, lives=4, keep_score=True):
         self.stop_music()
+        self._level_transition_started = False
         self.ecs_world = esper.World()
         level_path = f"assets/cfg/levels/level_{self.level:02d}.json"
         level_cfg = self._load_config_file(level_path)
@@ -212,12 +215,14 @@ class GameEngine:
 
     def new_game(self):
         self.level = 1
-        self.score = 0
         self.lives_lost = 0
         self.continues_used = 0
-        self.start_game(lives=4, keep_score=False)
         self.score_manager.reset_for_new_game()
-        lives = self.score_manager.initial_lives
+        self.score = 0
+        self.start_game(
+            lives=self.score_manager.initial_lives,
+            keep_score=False,
+        )
 
     def complete_level(self):
         if self.level >= 10:
@@ -232,6 +237,12 @@ class GameEngine:
             return None
         return self.ecs_world.try_component(self.player_entity, CPlayer)
 
+    def _level_is_cleared(self) -> bool:
+        return (
+            getattr(self, "_level_base_count", 0) > 0
+            and not self.ecs_world.get_component(CTagBase)
+        )
+
     def _update(self):
         system_input(self.ecs_world, self.events)
         system_player_commands(self.ecs_world)
@@ -242,7 +253,16 @@ class GameEngine:
         system_player_movement(self.ecs_world, self.delta_time)
         system_player_shooting(self.ecs_world, self.delta_time)
         system_player_special(self.ecs_world, self.delta_time)
-        system_enemy_spawner(self.ecs_world, self.delta_time)
+        alert = next(iter(self.ecs_world.get_component(CAlert)), None)
+        if alert:
+            alert[1].active_enemies = len(
+                self.ecs_world.get_component(CTagEnemy)
+            )
+        system_enemy_spawner(
+            self.ecs_world,
+            self.delta_time,
+            alert[1].spawn_rate_multiplier if alert else 1.0,
+        )
         system_base_behavior(
             self.ecs_world, self.delta_time, self.world_size
         )
@@ -259,7 +279,10 @@ class GameEngine:
         system_animation(self.ecs_world, self.delta_time)
         system_explosion_lifetime(self.ecs_world, self.delta_time)
         system_combat_collisions(
-            self.ecs_world, self.explosion_config, self.world_size
+            self.ecs_world,
+            self.explosion_config,
+            self.world_size,
+            self.score_manager.points_table,
         )
         system_bullet_lifetime(self.ecs_world, self.delta_time)
         self.ecs_world.process()
@@ -281,6 +304,35 @@ class GameEngine:
             
         system_score(self.ecs_world, self.score_manager)
         system_alert(self.ecs_world, self.delta_time, self.alert_controller)
+        player = self.current_player()
+        if player:
+            self._advance_after_level_clear(player)
+
+    def _advance_after_level_clear(self, player: CPlayer) -> bool:
+        if (
+            player.dead
+            or self._level_transition_started
+            or not self._level_is_cleared()
+        ):
+            return False
+
+        self._level_transition_started = True
+        _, gained_lives = self.score_manager.add_points_for(
+            "round_clear_bonus"
+        )
+        player.score = self.score_manager.score
+        player.lives = min(
+            self.score_manager.max_lives,
+            player.lives + gained_lives,
+        )
+        score_state = self.ecs_world.try_component(
+            self.player_entity, CScore
+        )
+        if score_state:
+            score_state.points = player.score
+        self.score = player.score
+        self.complete_level()
+        return True
 
     def player_position(self):
         transform = self.ecs_world.try_component(self.player_entity, CTransform)

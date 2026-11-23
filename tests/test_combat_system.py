@@ -196,6 +196,48 @@ class CombatSystemTests(unittest.TestCase):
         score = self.world.component_for_entity(player_id, CScore)
         self.assertEqual(score.points, 250)
 
+    def test_combat_uses_the_central_score_table(self):
+        player_id = create_player(
+            self.world,
+            pygame.Vector2(16, 16),
+            pygame.Vector2(100, 100),
+            pygame.Vector2(),
+            pygame.Color("white"),
+        )
+        self.world.add_component(
+            player_id,
+            CPlayer(20, {}, 4, pygame.Vector2(100, 100)),
+        )
+        score = CScore()
+        self.world.add_component(player_id, score)
+        enemy_id = create_enemy(
+            self.world,
+            {
+                "size": {"x": 16, "y": 16},
+                "velocity_min": 0,
+                "velocity_max": 0,
+                "health": 1,
+                "score": 999,
+            },
+            pygame.Vector2(20, 30),
+            "EnemyI",
+        )
+        create_bullet(
+            self.world,
+            pygame.Vector2(4, 4),
+            pygame.Vector2(20, 30),
+            pygame.Vector2(),
+            pygame.Color("white"),
+        )
+
+        system_combat_collisions(
+            self.world, {}, score_table={"EnemyI": 50}
+        )
+        self.world.process()
+
+        self.assertFalse(self.world.entity_exists(enemy_id))
+        self.assertEqual(score.points, 50)
+
     def test_mine_detonation_is_lethal_and_scores_on_destruction(self):
         player_id = create_player(
             self.world,
