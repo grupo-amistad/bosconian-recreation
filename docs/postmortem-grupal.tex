@@ -1,0 +1,259 @@
+\documentclass[12pt,letterpaper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[letterpaper,margin=2.5cm]{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!60!black,
+  pdftitle={Análisis de arquitectura y post-mortem grupal -- Bosconian},
+  pdfauthor={Equipo Bosconian Recreation}
+}
+
+\newcommand{\archivo}[1]{\texttt{\detokenize{#1}}}
+\renewcommand{\arraystretch}{1.2}
+
+\begin{document}
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+\centering
+\vspace*{1.2cm}
+{\Huge\bfseries Análisis de arquitectura\\[0.35em] y post-mortem grupal\par}
+\vspace{1.0cm}
+{\LARGE Bosconian Recreation\par}
+\vspace{0.25cm}
+{\large Recreación de Bosconian para Sharp X68000\par}
+\vspace{0.5cm}
+{\large Introducción al Desarrollo de Videojuegos\par}
+\vfill
+\begin{tabular}{>{\centering\arraybackslash}p{0.42\textwidth} >{\centering\arraybackslash}p{0.42\textwidth}}
+\textbf{Integrante 1} & \textbf{Integrante 2} \\
+Manuel Santiago Prieto Hernández & Daniela Munar Gonzalez \\
+[1.4em]
+\textbf{Integrante 3} & \textbf{Integrante 4} \\
+Camilo Puerto Peña & Camilo Inoue Ruda \\
+\end{tabular}
+\vfill
+{\large 23 de noviembre de 2026\par}
+\end{titlepage}
+\hypersetup{pageanchor=true}
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\chapter*{Alcance}
+\addcontentsline{toc}{chapter}{Alcance}
+Este documento presenta el análisis de la arquitectura y el post-mortem del proyecto Bosconian Recreation. La descripción técnica se basa en el enunciado, la documentación y el código del repositorio.
+
+\chapter{Resumen del proyecto}
+
+El proyecto consiste en desarrollar una recreación jugable de \emph{Bosconian}, tomando como referencia la versión de Sharp X68000. Se eligió Python con Pygame y Esper para trabajar con una ventana de 256\,$\times$\,208 píxeles y una arquitectura de entidades, componentes y sistemas (ECS).
+
+La arquitectura separa el motor y las escenas de los datos de las entidades y de los sistemas que actualizan el juego. Los niveles y diversos parámetros se leen desde archivos JSON. En la versión examinada existen el jugador, enemigos, bases, torretas, obstáculos, colisiones, cámara, minimapa, escenas de menú y diez configuraciones de nivel. El proyecto incluye, además, recursos gráficos y de audio.
+
+La implementación cuenta con la base técnica y un conjunto amplio de sistemas jugables. En la versión de \archivo{main} examinada, aún deben completarse requisitos obligatorios: activar el avance de ronda al destruir todas las bases, implementar las alertas amarilla y roja, mostrar las bases en el minimapa, persistir el récord y otorgar vidas extra según el puntaje. También debe ajustarse la habilidad especial para que corresponda con la especificación de cuatro proyectiles.
+
+\chapter{Evolución del desarrollo}
+
+El repositorio registra una evolución incremental: primero se establecieron el motor y la base ECS; posteriormente se incorporaron la compatibilidad con Esper 2, los recursos, la cámara, los controles del jugador, el combate y las configuraciones de niveles. La tabla relaciona el plan de seis semanas con los avances visibles en el código. Dado que el plan utiliza semanas relativas y el historial no asigna cada cambio a una semana específica, las etapas representan la secuencia propuesta y no fechas históricas exactas.
+
+\begin{center}\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.12\textwidth} >{\raggedright\arraybackslash}p{0.31\textwidth} >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Etapa} & \textbf{Meta del plan} & \textbf{Avance documentado en el repositorio} \\
+\midrule
+Semana 1 & Preparar el proyecto, el bucle de juego, Esper, ECS y componentes comunes. & Se establecieron el motor, el mundo Esper, componentes, fábricas, configuración JSON y documentación de contratos. La ventana se configura en 256\,$\times$\,208. \\
+Semana 2 & Obtener un prototipo donde se pueda mover y disparar, con cámara y enemigo inicial. & El código incorpora comandos de teclado, movimiento con aceleración, disparos, cámara, enemigos y colisiones. El historial registra la base ECS y la incorporación de la cámara. \\
+Semana 3 & Añadir combate, bases, torretas, obstáculos, muerte y puntaje. & Hay sistemas de combate, hitboxes, daño, explosiones, bases, torretas, minas, rocas y vidas del jugador. Los archivos de nivel usan entidades de estas categorías. \\
+Semana 4 & Integrar el mundo y la interfaz: cámara, wraparound, estrellas, minimapa, audio y HUD. & El código incorpora cámara, wraparound, campo de estrellas, HUD, minimapa y configuración de música y efectos. En la versión examinada, el minimapa no representa las bases y el HUD mantiene la alerta verde. \\
+Semana 5 & Completar diez niveles, escenas y el flujo entre partidas. & El repositorio contiene diez archivos JSON y escenas de título, instrucciones, créditos, pausa, continuación, victoria y derrota. En \archivo{main} aún no se activa el avance de ronda después de destruir todas las bases. \\
+Semana 6 & Corregir, publicar, documentar y preparar la presentación. & El repositorio incluye un README y documentos de arquitectura y configuración. En la versión examinada no se encontró un enlace de publicación, una etiqueta final ni el video de presentación. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Hitos verificables en Git}
+El historial contiene, entre otros, commits relacionados con la base ECS (\archivo{8212d9c}), compatibilidad con Esper 2 (\archivo{f7ff6a5}), cámara y wraparound (\archivo{6852dc4}), combate (\archivo{2e0eb7d}), controles y módulo del jugador (\archivo{5a2f47a}) y configuración de niveles (\archivo{72fb107}). Estos identificadores sirven para localizar cambios; no bastan por sí solos para atribuir tareas individuales ni para establecer la semana exacta en que se hicieron.
+
+\chapter{Análisis de arquitectura}
+
+\section{Vista general}
+\begin{center}
+\fbox{\begin{minipage}{0.92\textwidth}
+\centering
+\textbf{GameEngine / bucle de juego}\par
+Procesa eventos, calcula \archivo{delta_time}, actualiza y renderiza\par\vspace{0.6em}
+$\downarrow$\par
+\textbf{Administrador de escenas} \quad $\longrightarrow$ \quad \textbf{Escena activa}\par
+Título, juego, pausa, instrucciones, créditos, continuación, victoria o derrota\par\vspace{0.6em}
+$\downarrow$\par
+\textbf{Mundo Esper (ECS)}\par
+Entidades = identificadores \quad Componentes = datos \quad Sistemas = lógica\par
+Fábricas ensamblan jugador, enemigos, bases, torretas, proyectiles y obstáculos\par\vspace{0.6em}
+\textbf{Localizador de servicios} \quad $\longrightarrow$ \quad JSON, imágenes, sonidos y fuentes
+\end{minipage}}
+\end{center}
+
+\section{Bucle principal y escenas}
+\archivo{main.py} crea el motor. \archivo{GameEngine.run()} inicializa la escena de título y mantiene un único ciclo que obtiene eventos, calcula el tiempo entre cuadros, actualiza la escena activa, dibuja y presenta cada cuadro. El \archivo{SceneManager} distribuye estas operaciones y aplica los cambios de escena al terminar cada llamada. De este modo, todos los módulos utilizan el mismo ciclo y Pygame permanece activo durante las transiciones.
+
+Las escenas implementan un contrato común para recibir eventos, actualizarse y dibujarse. Esta separación asigna responsabilidades diferenciadas al menú, la partida y las pantallas de resultado. Durante la pausa, la escena de juego deja de ser la escena activa y su actualización queda suspendida.
+
+\section{ECS y responsabilidades}
+Esper administra las entidades como identificadores y permite consultarlas mediante sus componentes. Las fábricas de \path{src/create/} construyen entidades; los sistemas de \path{src/ecs/systems/} recorren las combinaciones de componentes que necesitan y actualizan el mundo.
+
+Algunos componentes compartidos son:
+\begin{itemize}[leftmargin=*]
+  \item \archivo{CTransform}: posición en píxeles de mundo y orientación.
+  \item \archivo{CVelocity}: velocidad en píxeles por segundo.
+  \item \archivo{CSurface} y \archivo{CAnimation}: representación y animación visual.
+  \item \archivo{CHitBox}: caja AABB con tamaño y desplazamiento propios, independiente del sprite.
+  \item \archivo{CState}: estado nombrado, tiempo transcurrido y datos opcionales.
+  \item Componentes de jugador, combate, bases, torretas, proyectiles y obstáculos.
+\end{itemize}
+
+La lógica de movimiento recibe \archivo{delta_time}, por lo que la velocidad se integra en función del tiempo y no solo del número de cuadros. El sistema de combate centraliza detección de solapamientos, daño y destrucción de las entidades relevantes. El mundo envuelve posiciones horizontal y verticalmente mediante el sistema de wraparound.
+
+\section{Patrones y conceptos aplicados}
+\begin{description}[leftmargin=!,labelwidth=3.4cm]
+  \item[ECS] Separa los datos de las entidades de la lógica de los sistemas. Facilita agregar tipos de entidad combinando componentes y evita concentrar todas las reglas en una jerarquía de clases.
+  \item[Command] Los comandos de jugador convierten entradas de teclado en intenciones de movimiento, disparo y habilidad. Las acciones pueden procesarse desde el sistema de comandos sin que cada entidad lea directamente el teclado.
+  \item[State] \archivo{CState} representa estados de juego; los sistemas de jugador, enemigos y bases actualizan sus transiciones. En esta implementación los estados se expresan principalmente con datos y lógica de sistemas, no con una clase distinta por estado.
+  \item[Service Locator] \archivo{ServiceLocator} ofrece acceso centralizado a configuración, imágenes, sonidos y fuentes, incluyendo caché de recursos.
+  \item[Scene] La interfaz \archivo{Scene} y \archivo{SceneManager} organizan pantallas y cambios de flujo bajo el mismo ciclo principal.
+  \item[Configuración de datos] JSON define ventana, jugador, enemigos, bases, obstáculos, interfaz, audio y los diez niveles. Esto permite ajustar parámetros sin alterar directamente los sistemas.
+\end{description}
+
+\section{Matemáticas, colisiones y respuesta del juego}
+El proyecto utiliza vectores bidimensionales para representar dirección, velocidad, cámara y distancia. El movimiento con aceleración y giro, la orientación del sprite y la distancia mínima entre posiciones permiten navegar un espacio con wraparound. Las colisiones usan rectángulos AABB definidos por \archivo{CHitBox}; estas cajas son independientes del tamaño visual del sprite.
+
+La respuesta audiovisual combina sprites animados, disparos, sonidos, explosiones, invulnerabilidad temporal, parpadeo durante la reaparición, interfaz y movimiento de estrellas. Estos elementos comunican al jugador los efectos de sus acciones. La fidelidad del ritmo, la dificultad, la apariencia y el comportamiento debe evaluarse mediante sesiones de comparación con el juego de referencia.
+
+\section{Recursos y configuración}
+\archivo{ServiceLocator} localiza y almacena recursos para su reutilización. Los archivos JSON parametrizan el tamaño del mundo, la aparición de enemigos, las bases y los obstáculos. La configuración facilita la ampliación del sistema; sin embargo, cada parámetro requiere un sistema que lo utilice. Por ejemplo, el tiempo de alerta roja está configurado, pero aún no se refleja en un sistema de alertas activo.
+
+\chapter{Evaluación del estado del producto}
+
+La revisión de la rama \archivo{main}, realizada el 23 de noviembre de 2026, permite distinguir las siguientes áreas:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Base implementada:} bucle de juego, ECS, escenas, comandos de teclado, cámara, wraparound, jugador, vidas, enemigos, bases, obstáculos y colisiones.
+  \item \textbf{Implementación parcial:} transición automática por destrucción de bases; minimapa, pendiente de incorporar marcadores de bases; alertas, cuyo HUD solo muestra el estado verde; puntaje, con récord persistente y vidas extra por completar; y habilidad especial, que debe ajustarse para producir los cuatro proyectiles especificados.
+  \item \textbf{Entrega por completar:} verificar el juego completo de principio a fin, publicar la versión, etiquetar el código final y completar documentos y presentación.
+\end{itemize}
+
+Esta evaluación documenta el estado del repositorio en la fecha indicada. La validación integral requiere ejecutar una partida completa, revisar los diez niveles y comprobar cada criterio funcional en el juego.
+
+\chapter{Post-mortem grupal}
+
+\section{Aspectos logrados}
+La separación por módulos permitió desarrollar en paralelo sobre una arquitectura compartida. Los contratos ECS, las fábricas y la configuración JSON establecieron puntos de integración claros. El historial de Git registra avances incrementales en arquitectura, jugador, combate, recursos y niveles. El uso de \archivo{delta_time}, hitboxes independientes y un administrador común de escenas redujo dependencias entre módulos.
+
+\section{Dificultades y aspectos por mejorar}
+La integración requirió coordinar interfaces compartidas: los componentes, las consultas de Esper, las coordenadas, las unidades de velocidad y los contratos de las fábricas deben coincidir entre módulos. En la versión examinada, algunos requisitos configurados aún no se reflejan en el comportamiento del juego; las alertas, el récord, las vidas extra y ciertos marcadores del minimapa son ejemplos de ello. El avance automático entre niveles también debe completarse y verificarse en la rama principal.
+
+\section{Mejoras para proyectos futuros}
+Como equipo, proponemos definir desde la primera semana los contratos de componentes, las unidades y las convenciones de coordenadas; integrar módulos pequeños de manera frecuente; y convertir cada criterio obligatorio de la rúbrica en una demostración verificable. También resulta conveniente mantener una matriz de trazabilidad entre requisito, archivo o sistema, responsable y estado. De este modo, una opción de configuración se considerará terminada cuando su efecto esté implementado y verificado en el juego.
+
+\section{Aprendizajes del equipo}
+El desarrollo permitió aplicar ECS en un programa interactivo y comprender la importancia de mantener los componentes como datos y los sistemas como lógica. También permitió observar cómo Command y Scene organizan las entradas y las pantallas, mientras que Service Locator centraliza el acceso a recursos. La integración mostró que una arquitectura efectiva requiere contratos claros, validación conjunta y cambios frecuentes que puedan incorporarse al proyecto compartido.
+
+\section{Reflexiones individuales}
+
+\subsection*{Manuel Santiago Prieto Hernández -- Integrante 1}
+\textbf{Aporte personal.} Mi responsabilidad se concentró en la arquitectura y la integración del motor: el bucle de juego, la configuración del mundo ECS, los componentes compartidos, la gestión de escenas, los servicios de recursos y la coordinación de la cámara con el mundo. También participé en integrar los módulos para que el jugador, el combate y la interfaz funcionaran dentro del mismo ciclo de actualización.
+
+\textbf{Aspectos logrados.} Fue acertado establecer desde una etapa temprana una estructura común basada en Esper, fábricas y sistemas. El administrador de escenas permitió organizar el menú, la partida, la pausa y las pantallas de resultado sin crear un bucle independiente para cada módulo. La definición de unidades para posición y velocidad, el uso de \archivo{delta_time} y la separación entre hitboxes y sprites proporcionaron contratos concretos para la integración. La cámara y el wraparound permitieron conservar las coordenadas de mundo de las entidades y mantener fija la interfaz.
+
+\textbf{Dificultades.} La integración constituyó el aspecto más exigente de mi responsabilidad. Fue necesario resolver incompatibilidades entre versiones de Esper, diferencias entre las consultas ECS y el desempaquetado de componentes, y rutas de recursos ausentes del repositorio. Estos problemas evidenciaron que un módulo puede funcionar de manera aislada y presentar errores al integrarse con el juego. También confirmé que declarar una opción en JSON no garantiza su funcionamiento: cada parámetro debe conectarse con un sistema y verificarse en ejecución.
+
+\textbf{Oportunidades de mejora.} En un proyecto futuro fijaría las versiones de las dependencias y validaría una instalación limpia desde el inicio. Documentaría los contratos de componentes y las consultas ECS antes de distribuir los sistemas, y realizaría integraciones pequeñas y frecuentes. Asimismo, mantendría una matriz de aceptación que vincule cada requisito con el módulo responsable y con un criterio observable de verificación.
+
+\textbf{Aprendizajes.} Aprendí a modelar el juego mediante datos que los sistemas transforman, en lugar de concentrar todas las reglas en una sola clase. Comprendí cómo el bucle de juego, ECS, Command, State, Scene y Service Locator atienden responsabilidades distintas y complementarias. También consolidé el uso de vectores, tiempo entre cuadros, cámara, coordenadas de mundo y colisiones AABB. Finalmente, comprendí que una arquitectura aporta valor cuando facilita la integración y la revisión del producto completo.
+
+\subsection*{Daniela Munar Gonzalez -- Integrante 2}
+\textbf{Aporte y evidencia personal:}\par
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
+\textbf{Qué salió bien:}\par
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
+\textbf{Qué fue difícil y qué cambiaría:}\par
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
+\textbf{Qué aprendí:}\par
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}
+
+\subsection*{Camilo Puerto Peña -- Integrante 3}
+\textbf{Aporte y evidencia personal:}\par
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
+\textbf{Qué salió bien:}\par
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
+\textbf{Qué fue difícil y qué cambiaría:}\par
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
+\textbf{Qué aprendí:}\par
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}
+
+\subsection*{Camilo Inoue Ruda -- Integrante 4}
+\textbf{Aporte y evidencia personal:}\par
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
+\textbf{Qué salió bien:}\par
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
+\textbf{Qué fue difícil y qué cambiaría:}\par
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
+\textbf{Qué aprendí:}\par
+\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
+\noindent\rule{\textwidth}{0.4pt}
+
+\chapter{Roles y contribuciones del equipo}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth} >{\raggedright\arraybackslash}p{0.26\textwidth} >{\raggedright\arraybackslash}p{0.50\textwidth}@{}}
+\toprule
+\textbf{Integrante} & \textbf{Responsabilidad acordada} & \textbf{Contribución que se debe describir con evidencia propia} \\
+\midrule
+1 & Manuel Santiago Prieto Hernández -- arquitectura, motor y ECS. & Motor, loop, escenas, componentes compartidos, Service Locator, cámara e integración. \\
+2 & Daniela Munar Gonzalez -- jugador. & Controles, movimiento, disparos, habilidad, vidas y reaparición. \\
+3 & Camilo Puerto Peña -- combate. & Enemigos, bases, torretas, obstáculos, hitboxes, colisiones y explosiones. \\
+4 & Camilo Inoue Ruda -- mundo e interfaz. & Estrellas, minimapa, HUD, alertas, puntaje, niveles, audio y presentación. \\
+\bottomrule
+\end{tabular}
+\normalsize
+\setlength{\tabcolsep}{6pt}
+
+\chapter{Conclusiones}
+La arquitectura ofrece una base coherente para una recreación de Bosconian: un solo loop, entidades compuestas mediante componentes, sistemas especializados, escenas, recursos centralizados y niveles configurables. El trabajo pendiente más importante consiste en cerrar las brechas funcionales identificadas y validar el recorrido completo con el juego en ejecución. La entrega debe acompañarse de una versión reproducible, el código final etiquetado, la publicación y las evidencias de participación de cada integrante.
+
+\chapter*{Fuentes de trabajo}
+\addcontentsline{toc}{chapter}{Fuentes de trabajo}
+\begin{itemize}[leftmargin=*]
+  \item Enunciado y rúbrica del proyecto suministrados por el curso.
+  \item Repositorio del equipo: \url{https://github.com/grupo-amistad/bosconian-recreation}.
+  \item Documentación de arquitectura: \path{docs/arquitectura.md}.
+  \item Plan de trabajo: \path{docs/plan-de-trabajo.md}.
+  \item Esquema de niveles: \path{docs/configuracion-de-niveles.md}.
+  \item Código del motor, ECS, jugador, servicios e interfaz en sus directorios dentro de \path{src/}.
+  \item Configuración de ventana, entidades, audio y niveles: archivos JSON en \path{assets/cfg/}.
+\end{itemize}
+
+\end{document}
