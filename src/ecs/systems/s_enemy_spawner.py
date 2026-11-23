@@ -75,6 +75,6 @@ def _spawn_enemy(
 
 
 def _play_spawn_sound(enemy_config: dict) -> None:
-    sound_path = enemy_config.get("sound_spawn", enemy_config.get("sound"))
+    sound_path = enemy_config.get("sound_spawn")
     if sound_path:
         ServiceLocator.sounds.load(sound_path).play()

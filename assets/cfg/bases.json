@@ -1,5 +1,8 @@
 {
   "default": {
+    "image": "assets/img/base_core.png",
+    "turret_image": "assets/img/base_turret.png",
+    "core_image": "assets/img/base_core.png",
     "size": {"x": 28, "y": 28},
     "core_hitbox_size": {"x": 8, "y": 8},
     "core_hitbox_offset": {"x": 10, "y": 10},

@@ -37,12 +37,20 @@ class SoundsService:
     def __init__(self, root: Path) -> None:
         self.root = root
         self._cache: dict[str, pygame.mixer.Sound] = {}
+        self.volume = 0.7
+
+    def set_volume(self, volume: float) -> None:
+        self.volume = max(0.0, min(1.0, float(volume)))
+        for sound in self._cache.values():
+            sound.set_volume(self.volume)
 
     def load(self, path: str) -> pygame.mixer.Sound:
         if not pygame.mixer.get_init():
             return _SilentSound()
         if path not in self._cache:
-            self._cache[path] = pygame.mixer.Sound(self._resolve(path))
+            sound = pygame.mixer.Sound(self._resolve(path))
+            sound.set_volume(self.volume)
+            self._cache[path] = sound
         return self._cache[path]
 
     def _resolve(self, path: str) -> Path:

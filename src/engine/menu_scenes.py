@@ -6,6 +6,7 @@ from src.services import ServiceLocator
 class TextScene(Scene):
     title = ""
     lines: tuple[str, ...] = ()
+    music_key = None
 
     def __init__(self, engine, return_scene=None) -> None:
         self.engine = engine
@@ -14,6 +15,11 @@ class TextScene(Scene):
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
             self.engine.scene_manager.request_change(self.return_scene)
+
+    def on_enter(self):
+        if self.music_key and isinstance(self.return_scene, TitleScene):
+            path = self.engine.audio_config.get("music", {}).get(self.music_key)
+            self.engine.play_music(path)
 
     def update(self, delta_time):
         pass
@@ -27,11 +33,13 @@ class TextScene(Scene):
 class InstructionsScene(TextScene):
     title = "INSTRUCCIONES"
     lines = ("FLECHAS: MOVER", "Z / ESPACIO: DISPARAR", "X: ESPECIAL", "P: PAUSA")
+    music_key = "instructions"
 
 
 class CreditsScene(TextScene):
     title = "CREDITOS"
     lines = ("BOSCONIAN RECREATION", "PROYECTO DE VIDEOJUEGOS", "EQUIPO DE 4 INTEGRANTES")
+    music_key = "credits"
 
 
 class TitleScene(Scene):
@@ -39,11 +47,15 @@ class TitleScene(Scene):
         self.engine = engine
         base = ServiceLocator.images.load("assets/img/Boskonian spacecraft.png")
         mine = ServiceLocator.images.load("assets/img/space mine.png")
-        self.base_sprite = pygame.transform.scale(base, (72, 80))
-        self.mine_sprite = pygame.transform.scale(mine, (20, 20))
+        logo = ServiceLocator.images.load("assets/img/titulo.png")
+        self.base_sprite = pygame.transform.scale(base, (56, 62))
+        self.mine_sprite = pygame.transform.scale(mine, (16, 16))
+        self.logo_sprite = pygame.transform.scale(logo, (160, 64))
 
     def on_enter(self):
-        self.engine.play_music("assets/mus/starshooterv2.1.ogg")
+        self.engine.play_music(
+            self.engine.audio_config.get("music", {}).get("menu")
+        )
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -62,10 +74,11 @@ class TitleScene(Scene):
     def draw(self, target):
         target.fill((0, 0, 0))
         self.engine.starfield.draw(target)
-        target.blit(self.base_sprite, ((target.get_width() - self.base_sprite.get_width()) // 2, 10))
-        target.blit(self.mine_sprite, (28, 55))
-        target.blit(self.mine_sprite, (target.get_width() - 48, 55))
-        self.engine.draw_lines(target, ("BOSCONIAN", "ENTER: JUGAR", "I: INSTRUCCIONES", "C: CREDITOS", "ESC: SALIR"), 105)
+        target.blit(self.logo_sprite, ((target.get_width() - self.logo_sprite.get_width()) // 2, 3))
+        target.blit(self.base_sprite, ((target.get_width() - self.base_sprite.get_width()) // 2, 67))
+        target.blit(self.mine_sprite, (27, 88))
+        target.blit(self.mine_sprite, (target.get_width() - 43, 88))
+        self.engine.draw_lines(target, ("ENTER: JUGAR", "I: INSTRUCCIONES", "C: CREDITOS", "ESC: SALIR"), 137)
 
 
 class PauseScene(Scene):
@@ -121,6 +134,11 @@ class ContinueScene(Scene):
 class EndScene(Scene):
     def __init__(self, engine, victory):
         self.engine, self.victory = engine, victory
+
+    def on_enter(self):
+        key = "victory" if self.victory else "defeat"
+        path = self.engine.audio_config.get("music", {}).get(key)
+        self.engine.play_music(path)
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:

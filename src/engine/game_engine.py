@@ -64,6 +64,14 @@ class GameEngine:
         ServiceLocator.initialize(Path(__file__).resolve().parents[2])
         self.window_cfg = ServiceLocator.configs.load("assets/cfg/window.json")
         pygame.init()
+        self.audio_config = ServiceLocator.configs.load("assets/cfg/audio.json")
+        ServiceLocator.sounds.set_volume(
+            self.audio_config.get("volumes", {}).get("sfx", 0.7)
+        )
+        if pygame.mixer.get_init():
+            pygame.mixer.music.set_volume(
+                self.audio_config.get("volumes", {}).get("music", 0.5)
+            )
         pygame.display.set_caption(self.window_cfg["title"])
         size = (self.window_cfg["size"]["w"], self.window_cfg["size"]["h"])
         self.playfield_width = max(1, size[0] - 80)
@@ -176,7 +184,12 @@ class GameEngine:
             )
         interface = self._load_config_file("assets/cfg/interface.json")
         self.hud_font = ServiceLocator.fonts.load(interface["font"], 5)
-        self.play_music("assets/mus/confrontation.ogg")
+        self.play_music(
+            level_cfg.get(
+                "music",
+                self.audio_config.get("music", {}).get("default_level"),
+            )
+        )
         self.scene_manager.request_change(GameplayScene(self))
 
     def new_game(self):
@@ -296,9 +309,12 @@ class GameEngine:
         self.scene_manager.request_change(PauseScene(self, gameplay_scene))
 
     def play_music(self, path):
-        if pygame.mixer.get_init():
+        if path and pygame.mixer.get_init():
             try:
                 pygame.mixer.music.load(ServiceLocator.sounds._resolve(path))
+                pygame.mixer.music.set_volume(
+                    self.audio_config.get("volumes", {}).get("music", 0.5)
+                )
                 pygame.mixer.music.play(-1)
             except (pygame.error, OSError):
                 pass

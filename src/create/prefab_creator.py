@@ -168,6 +168,7 @@ def create_enemy(world, config, pos, kind):
             ),
             _as_tuple(config.get("bullet_hitbox_size")),
             _as_tuple(config.get("bullet_hitbox_offset")),
+            config.get("sound_shoot"),
         ),
     )
     world.add_component(entity, CState(behavior_mode))
@@ -262,6 +263,7 @@ def create_base(world, config, pos, level, enemy_configs):
         pygame.Vector2(pos) + core_offset,
         pygame.Vector2(),
         CTagBaseCore,
+        image=config.get("core_image"),
         size=core_size,
         color=core_closed_color,
     )

@@ -39,6 +39,7 @@ class CEnemyBehavior:
     bullet_size: tuple[int, int] = (4, 4)
     bullet_hitbox_size: tuple[int, int] | None = None
     bullet_hitbox_offset: tuple[int, int] | None = None
+    shoot_sound: str | None = None
 
 
 @dataclass

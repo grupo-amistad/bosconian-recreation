@@ -55,6 +55,7 @@ class CSurface:
         self.area = pygame.Rect(area) if area else self.surf.get_rect()
         if not image and not area:
             self.area.size = (max(1, int(size.x)), max(1, int(size.y)))
+        self.base_image = self.surf.copy()
 
     @property
     def size(self):

@@ -29,6 +29,7 @@ from src.ecs.components.c_velocity import CVelocity
 from src.ecs.systems.s_collisions import _explode
 from src.ecs.systems.s_player_life import request_player_death
 from src.engine.camera import shortest_delta
+from src.services import ServiceLocator
 
 
 
@@ -99,6 +100,8 @@ def system_enemy_behavior(
                 behavior.bullet_hitbox_size,
                 behavior.bullet_hitbox_offset,
             )
+            if behavior.shoot_sound:
+                ServiceLocator.sounds.load(behavior.shoot_sound).play()
         behavior.fire_elapsed = 0.0
 
 
@@ -142,7 +145,14 @@ def system_base_behavior(
                     state.core_open_color if state.core_open
                     else state.core_closed_color
                 )
-                core_surface.surf.fill(core_color)
+                if getattr(core_surface, "current_tint", None) != core_color:
+                    core_surface.surf = core_surface.base_image.copy()
+                    tint = pygame.Surface(core_surface.surf.get_size(), pygame.SRCALPHA)
+                    tint.fill((*core_color, 255))
+                    core_surface.surf.blit(
+                        tint, (0, 0), special_flags=pygame.BLEND_RGBA_MULT
+                    )
+                    core_surface.current_tint = core_color
         for turret_id in list(state.turret_ids):
             if not world.entity_exists(turret_id):
                 state.turret_ids.discard(turret_id)
@@ -183,6 +193,9 @@ def system_base_behavior(
                     state.bullet_hitbox_size,
                     state.bullet_hitbox_offset,
                 )
+                ServiceLocator.sounds.load(
+                    "assets/sfx/enemy_shoot.ogg"
+                ).play()
             turret.elapsed = 0.0
 
         if (
@@ -513,6 +526,7 @@ def _destroy(
     if entity in destroyed or not world.entity_exists(entity):
         return False
     obstacle = world.try_component(entity, CObstacleState)
+    base = world.try_component(entity, CBaseState)
     if obstacle and obstacle.lethal:
         obstacle_transform = world.try_component(entity, CTransform)
         obstacle_hitbox = world.try_component(entity, CHitBox)
@@ -536,7 +550,6 @@ def _destroy(
                         center,
                         destroyed,
                     )
-    base = world.try_component(entity, CBaseState)
     if base:
         if base.core_entity is not None and world.entity_exists(base.core_entity):
             world.delete_entity(base.core_entity)
@@ -545,7 +558,14 @@ def _destroy(
             if world.entity_exists(turret_id):
                 world.delete_entity(turret_id)
                 destroyed.add(turret_id)
-    _explode(world, pygame.Vector2(position), explosion_config)
+    if obstacle and obstacle.kind == "mine":
+        effect_key = "mine"
+    elif base:
+        effect_key = "base"
+    else:
+        effect_key = "enemy"
+    effect_config = (explosion_config or {}).get(effect_key, explosion_config)
+    _explode(world, pygame.Vector2(position), effect_config)
     world.delete_entity(entity)
     destroyed.add(entity)
     return True
