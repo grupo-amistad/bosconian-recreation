@@ -21,6 +21,7 @@ from src.ui.score import ScoreManager
 from src.ecs.components.c_input_command import CInputCommand
 from src.ecs.components.c_player import CPlayer
 from src.ecs.components.c_combat import CScore
+from src.ecs.components.c_combat import CTagBase
 from src.ecs.components.c_special_ability import CSpecialAbility
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
@@ -187,6 +188,7 @@ class GameEngine:
                 level_cfg.get("level", self.level),
                 enemies_cfg,
             )
+        self._level_base_count = len(level_cfg.get("bases", []))
         for obstacle_entry in level_cfg.get("obstacles", []):
             obstacle_type = obstacle_entry.get("type")
             if obstacle_type not in obstacle_configs:
