@@ -40,7 +40,7 @@
 Manuel Santiago Prieto Hernández & Daniela Munar Gonzalez \\
 [1.4em]
 \textbf{Integrante 3} & \textbf{Integrante 4} \\
-Camilo Puerto Peña & Camilo Inoue Ruda \\
+Camilo Puerto Peña & Camilo Inoue Rudas \\
 \end{tabular}
 \vfill
 {\large 23 de noviembre de 2026\par}
@@ -198,20 +198,15 @@ El desarrollo permitió aplicar ECS en un programa interactivo y comprender la i
 
 \textbf{Qué aprendí.} Aprendí que desarrollar un videojuego no consiste solo en dibujar entidades: hay que coordinar el ciclo de actualización, el movimiento, las colisiones, el daño, el puntaje, la dificultad y la progresión para que las reglas sean coherentes durante toda la partida. También reforcé el uso de ECS, fábricas, configuración externa y pruebas automatizadas. Me llevo la importancia de comprobar en ejecución lo que se configura y de probar el juego como un ciclo completo, además de verificar cada sistema por separado.
 
-\subsection*{Camilo Inoue Ruda -- Integrante 4}
-\textbf{Aporte y evidencia personal:}\par
-\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
-\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
-\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
-\textbf{Qué salió bien:}\par
-\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
-\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
-\textbf{Qué fue difícil y qué cambiaría:}\par
-\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
-\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
-\textbf{Qué aprendí:}\par
-\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
-\noindent\rule{\textwidth}{0.4pt}
+\subsection*{Camilo Inoue Rudas -- Integrante 4}
+\textbf{Aporte y evidencia personal.} Mi responsabilidad se centró en el mundo, la interfaz, los niveles, el audio y la presentación del juego. Organicé y completé los recursos gráficos y sonoros (incluyendo el recorte de animaciones de explosión y la generación/conversión de efectos de sonido a formato \archivo{.ogg}) y estructuré los archivos de configuración \archivo{audio.json}, \archivo{score.json}, \archivo{interface.json} y los diez niveles (\archivo{level_01.json} a \archivo{level_10.json}). En código, implementé el fondo espacial con parpadeo y paralaje multicapa (\archivo{starfield.py}), el panel lateral de interfaz (\archivo{hud.py}), el radar de bases y jugador (\archivo{minimap.py}), el sistema de puntaje con récord persistente y vidas extra (\archivo{score.py} y \archivo{s_score.py}), el sistema de alertas verde, amarilla y roja mediante el patrón State (\archivo{alert_system.py} y \archivo{s_alert.py}) y el flujo de escenas de menú, instrucciones, créditos, pausa y resultados (\archivo{menu_scenes.py}).
+
+\textbf{Qué salió bien.} Centralizar los parámetros visuales, de puntaje, de audio y de niveles en archivos JSON permitió ajustar la progresión de dificultad, los colores de alerta y el balance del juego sin modificar la lógica de los sistemas. Asimismo, desacoplar el cálculo de puntaje y la máquina de estados de alerta del renderizado facilitó validar su funcionamiento mediante pruebas unitarias antes de integrarlos al ciclo principal.
+
+\textbf{Qué fue difícil y qué cambiaría.} El principal reto fue alinear las rutas de recursos, las dimensiones de la fuente pixel (ajustándola a su escala nativa de 8 píxeles para garantizar legibilidad en 256\,$\times$\,208) y las consultas de componentes entre módulos desarrollados en paralelo. En un proyecto futuro acordaría desde el inicio los nombres exactos de rutas y componentes compartidos y realizaría integraciones más frecuentes sobre la rama de desarrollo para evitar desajustes visuales o de balance al final.
+
+\textbf{Qué aprendí.} Aprendí a estructurar la capa de presentación y progresión de un videojuego sobre una arquitectura ECS sin mezclar la lógica de estado con el dibujado en pantalla. Comprendí en la práctica la utilidad de los patrones State, Scene y Service Locator, así como la importancia de validar en ejecución cada parámetro definido en archivos de configuración y de preparar una compilación reproducible para su distribución.\textbf{Aporte y evidencia personal:}\par
+
 
 \chapter{Roles y contribuciones del equipo}
 \small
@@ -223,7 +218,7 @@ El desarrollo permitió aplicar ECS en un programa interactivo y comprender la i
 1 & Manuel Santiago Prieto Hernández -- arquitectura, motor y ECS. & Motor, loop, escenas, componentes compartidos, Service Locator, cámara e integración. \\
 2 & Daniela Munar Gonzalez -- jugador. & Controles, movimiento, disparos, habilidad, vidas y reaparición. \\
 3 & Camilo Puerto Peña -- combate. & Enemigos, bases, torretas, obstáculos, hitboxes, colisiones y explosiones. \\
-4 & Camilo Inoue Ruda -- mundo e interfaz. & Estrellas, minimapa, HUD, alertas, puntaje, niveles, audio y presentación. \\
+4 & Camilo Inoue Rudas -- mundo e interfaz. & Estrellas, minimapa, HUD, alertas, puntaje, niveles, audio y presentación. \\
 \bottomrule
 \end{tabular}
 \normalsize
