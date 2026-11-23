@@ -181,19 +181,13 @@ El desarrollo permitió aplicar ECS en un programa interactivo y comprender la i
 \textbf{Aprendizajes.} Aprendí a modelar el juego mediante datos que los sistemas transforman, en lugar de concentrar todas las reglas en una sola clase. Comprendí cómo el bucle de juego, ECS, Command, State, Scene y Service Locator atienden responsabilidades distintas y complementarias. También consolidé el uso de vectores, tiempo entre cuadros, cámara, coordenadas de mundo y colisiones AABB. Finalmente, comprendí que una arquitectura aporta valor cuando facilita la integración y la revisión del producto completo.
 
 \subsection*{Daniela Munar Gonzalez -- Integrante 2}
-\textbf{Aporte y evidencia personal:}\par
-\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
-\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
-\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
-\textbf{Qué salió bien:}\par
-\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
-\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
-\textbf{Qué fue difícil y qué cambiaría:}\par
-\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
-\noindent\rule{\textwidth}{0.4pt}\\[1.0em]
-\textbf{Qué aprendí:}\par
-\noindent\rule{\textwidth}{0.4pt}\\[1.2em]
-\noindent\rule{\textwidth}{0.4pt}
+\textbf{Aporte y evidencia personal.} Me encargué del jugador, es decir, los controles, el movimiento, los disparos, las vidas y la reaparición. Usé el patrón Command para que las teclas se conviertan en acciones que los sistemas leen sin depender del teclado. La nave acelera poco a poco, gira en ocho direcciones y usa \archivo{delta_time}. Cada disparo lanza una bala al frente y otra atrás, y el especial lanza tres balas en abanico. Para las vidas usé el patrón State, de modo que al morir hay varias explosiones y al reaparecer se reutiliza la misma entidad. Todos los valores quedaron configurables en \archivo{player.json} y \archivo{bullet.json}.
+
+\textbf{Qué salió bien.} Separar la entrada del comportamiento permitió cambiar los controles desde el JSON sin tocar los sistemas, y deja listo el camino para usar gamepad. Las balas del jugador reutilizaron las hitboxes existentes, así que el sistema de colisiones las detectó sin cambios. Al probar el juego también encontré que el jugador aparecía sobre las torretas del nivel 1 y perdía todas sus vidas al instante, y moví el punto de aparición para corregirlo.
+
+\textbf{Qué fue difícil y qué cambiaría.} Lo más difícil fue integrar mi parte con archivos de otros integrantes, como el motor y el combate, sin romper lo que ya funcionaba. También tuve problemas con la versión de Esper y errores de indentación que impedían ejecutar el juego. Si lo hiciera de nuevo, crearía un entorno virtual desde el inicio y acordaría antes con el equipo qué partes compartidas iba a modificar.
+
+\textbf{Qué aprendí.} Aprendí a pensar el jugador como componentes con datos y sistemas que los transforman, en lugar de una sola clase que lo hace todo. Entendí en un caso real para qué sirven Command y State. También aprendí que un módulo no basta con que funcione solo, hay que probarlo dentro del juego completo y avisar al equipo qué se cambió.
 
 \subsection*{Camilo Puerto Peña -- Integrante 3}
 \textbf{Aporte personal.} Como integrante 3, trabajé principalmente en las entidades y el combate: enemigos de tipos I, P y E, bases y sus torretas, obstáculos, proyectiles, hitboxes AABB, colisiones y explosiones. También participé en conectar estos sistemas con el flujo de los diez niveles, la dificultad, las alertas y el puntaje, y en probar que las bases destruidas permitieran avanzar de nivel.
