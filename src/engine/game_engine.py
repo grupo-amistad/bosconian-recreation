@@ -77,6 +77,12 @@ class GameEngine:
         ServiceLocator.sounds.set_volume(
             self.audio_config.get("volumes", {}).get("sfx", 0.7)
         )
+        sfx_paths = self.audio_config.get("sfx", {})
+        sfx_volumes = self.audio_config.get("sfx_volumes", {})
+        for sfx_name, volume in sfx_volumes.items():
+            sfx_path = sfx_paths.get(sfx_name)
+            if sfx_path:
+                ServiceLocator.sounds.set_path_volume(sfx_path, volume)
         if pygame.mixer.get_init():
             pygame.mixer.music.set_volume(
                 self.audio_config.get("volumes", {}).get("music", 0.5)

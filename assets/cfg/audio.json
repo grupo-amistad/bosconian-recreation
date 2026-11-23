@@ -1,7 +1,10 @@
 {
     "volumes": {
         "music": 0.5,
-        "sfx": 0.7
+        "sfx": 0.3
+    },
+    "sfx_volumes": {
+        "enemy_shoot": 0.08
     },
     "music": {
         "menu": "assets/mus/exploratig_the_cosmos_1_sub_38_bit.ogg",
