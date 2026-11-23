@@ -14,6 +14,7 @@ from src.create.prefab_creator import (
 from src.ecs.components.c_input_command import CInputCommand
 from src.ecs.components.c_player import CPlayer
 from src.ecs.components.c_combat import CScore
+from src.ecs.components.c_combat import CTagBase
 from src.ecs.components.c_special_ability import CSpecialAbility
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
@@ -98,6 +99,7 @@ class GameEngine:
         self.world_size = pygame.Vector2(size)
         self.player_entity = None
         self._last_lives = 4
+        self._level_base_count = 0
 
     def draw_lines(self, target, lines, y):
         font = ServiceLocator.fonts.load("fnt/PressStart2P.ttf", 7)
@@ -171,6 +173,7 @@ class GameEngine:
                 level_cfg.get("level", self.level),
                 enemies_cfg,
             )
+        self._level_base_count = len(level_cfg.get("bases", []))
         for obstacle_entry in level_cfg.get("obstacles", []):
             obstacle_type = obstacle_entry.get("type")
             if obstacle_type not in obstacle_configs:
@@ -258,6 +261,18 @@ class GameEngine:
             if player.dead:
                 self.stop_music()
                 self.scene_manager.request_change(ContinueScene(self))
+                return
+
+            # A level ends only after it had bases and every base has been
+            # destroyed. Empty or malformed level configs must not auto-win.
+            if self._level_is_cleared():
+                self.complete_level()
+
+    def _level_is_cleared(self):
+        """Return whether every base configured for this level was destroyed."""
+        if self._level_base_count <= 0:
+            return False
+        return not any(self.ecs_world.get_component(CTagBase))
 
     def player_position(self):
         transform = self.ecs_world.try_component(self.player_entity, CTransform)
