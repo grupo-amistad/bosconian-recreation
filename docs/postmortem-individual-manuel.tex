@@ -1,0 +1,128 @@
+\documentclass[12pt,letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[letterpaper,margin=2.7cm]{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!60!black,
+  pdftitle={Post-mortem individual -- Bosconian Recreation},
+  pdfauthor={Manuel Santiago Prieto Hernández}
+}
+
+\newcommand{\archivo}[1]{\texttt{\detokenize{#1}}}
+\renewcommand{\arraystretch}{1.2}
+
+\title{\textbf{Post-mortem individual}\\[0.4em]
+       \large Bosconian Recreation}
+\author{Manuel Santiago Prieto Hernández\\
+        Integrante 1 -- Arquitectura, motor y ECS\\[0.4em]
+        Introducción al Desarrollo de Videojuegos}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Descripción del rol y del trabajo realizado}
+
+En el proyecto \emph{Bosconian Recreation} asumí el rol de integrante 1, con responsabilidad sobre la arquitectura general y la integración del motor. Mi trabajo se orientó a establecer una estructura común para que los módulos del jugador, el combate y la interfaz pudieran ejecutarse como partes de un mismo videojuego. El objetivo fue evitar que cada módulo mantuviera su propio ciclo de ejecución y definir interfaces compartidas para organizar el código.
+
+\subsection{Motor y ciclo principal}
+
+En \archivo{src/engine/game_engine.py} trabajé sobre el ciclo principal del juego. Este ciclo procesa los eventos de Pygame, calcula \archivo{delta_time}, delega la actualización y el dibujo en la escena activa, presenta el cuadro y cierra los recursos al salir. La actualización secuencial de los sistemas mantiene el avance del mundo dentro de un solo flujo de control.
+
+También participé en la organización del contrato común de escenas y en el uso de \archivo{src/engine/scene_manager.py}. El administrador distribuye eventos, actualización y dibujo, y procesa las solicitudes de cambio de escena al terminar cada operación. Esto permite pasar entre el menú, la partida, la pausa y las pantallas de resultado sin reinicializar Pygame.
+
+\subsection{Arquitectura ECS e integración}
+
+La estructura del juego utiliza Esper como mundo ECS. Las entidades se representan mediante identificadores y se componen de datos como posición, velocidad, superficie visual, animación, hitbox y estado. Los sistemas consultan las combinaciones de componentes que necesitan y actualizan las entidades. En este trabajo contribuí a definir y conectar esos contratos compartidos para que las fábricas y los sistemas de los distintos módulos pudieran utilizar el mismo modelo.
+
+Entre las evidencias de esta estructura están los componentes de \archivo{src/ecs/components/}, los sistemas de \archivo{src/ecs/systems/} y las llamadas ordenadas desde el motor. Por ejemplo, \archivo{CTransform} conserva posición y orientación; \archivo{CVelocity} contiene velocidad; y \archivo{CHitBox} define una caja de colisión independiente del tamaño visual del sprite. Los sistemas reciben \archivo{delta_time} cuando la operación depende del tiempo.
+
+Como parte del trabajo de integración, atendí incompatibilidades relacionadas con la versión de Esper y con la forma de desempaquetar resultados de consultas ECS. También revisé rutas de recursos ausentes que impedían iniciar ciertas escenas o crear entidades. Estos problemas mostraron que integrar implica comprobar las dependencias y los datos en común, además de revisar cada módulo por separado.
+
+\subsection{Cámara y coordenadas}
+
+En \archivo{src/engine/camera.py} se organiza la relación entre las coordenadas del mundo y las coordenadas de pantalla. La cámara sigue la posición del jugador y ofrece conversiones en ambos sentidos, mientras el renderizador transforma las entidades que pertenecen al mundo. La interfaz se dibuja en coordenadas fijas para que el HUD permanezca estable durante el desplazamiento. La cámara también aporta el desplazamiento utilizado por el campo de estrellas para producir paralaje. Asimismo, conecté el wraparound horizontal y vertical con el seguimiento de cámara, para que cruzar un límite del mundo no genere un salto incorrecto en pantalla. En coordinación con el administrador de escenas, participé en completar el flujo de pausa, continuación y resultado de partida.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.25\textwidth} X@{}}
+\toprule
+\textbf{Área} & \textbf{Evidencia principal en el repositorio} \\
+\midrule
+Ciclo principal & \archivo{src/engine/game_engine.py} \\
+Administración de escenas & \archivo{src/engine/scene_manager.py} y \archivo{src/engine/scene.py} \\
+Componentes y sistemas & \archivo{src/ecs/components/} y \archivo{src/ecs/systems/} \\
+Cámara y renderizado & \archivo{src/engine/camera.py} y \archivo{src/ecs/systems/s_rendering.py} \\
+Acceso a recursos & \archivo{src/services/service_locator.py} \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\clearpage
+\section{Evolución del trabajo durante cuatro semanas}
+
+El desarrollo se realizó en cuatro semanas. La siguiente síntesis organiza mi trabajo por etapas según la secuencia seguida en el proyecto; resume los hitos principales sin atribuir cada cambio a una fecha exacta.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth} X X@{}}
+\toprule
+\textbf{Semana} & \textbf{Enfoque} & \textbf{Mi trabajo como integrante 1} \\
+\midrule
+1 & Base del proyecto y acuerdos de arquitectura. &
+Organicé el motor y el Game Loop; definí junto con el equipo los componentes y contratos ECS iniciales, la estructura de escenas y la configuración base. \\
+2 & Primer prototipo y coordenadas del mundo. &
+Conecté la cámara con el seguimiento del jugador y el renderizado, y trabajé en la separación entre coordenadas del mundo y de pantalla. Se integró el wraparound con el movimiento y la cámara. \\
+3 & Integración de los módulos de juego. &
+Conecté los sistemas del jugador y el combate con el ciclo principal. Resolví incompatibilidades de Esper y consultas ECS, y revisé problemas de carga de recursos que afectaban la ejecución. \\
+4 & Flujo completo e integración final. &
+Integré los cambios de escenas, pausa, continuación y fin de partida con el motor común; revisé la progresión de niveles y documenté la arquitectura y el estado del producto. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Ajustes: aspectos logrados, dificultades y mejoras}
+
+\subsection{Aspectos que salieron bien}
+
+Considero acertado haber organizado la ejecución desde un motor y un administrador de escenas comunes. Esta decisión dio un lugar definido a la lógica de cada pantalla y evitó que el menú, la partida o la pausa iniciaran ciclos independientes. También fue útil compartir componentes y convenciones de coordenadas: los módulos pudieron crear entidades que los sistemas centrales reconocen y procesan.
+
+El uso de \archivo{delta_time} permitió expresar el movimiento en relación con el tiempo transcurrido entre cuadros. La separación entre coordenadas de mundo e interfaz ayudó a que la cámara desplazara las entidades del juego sin mover el HUD. Además, la división entre componentes y sistemas hizo posible identificar mejor dónde se almacenan los datos y dónde se ejecuta cada comportamiento.
+
+\subsection{Dificultades y aspectos que no salieron como esperaba}
+
+La integración fue la parte más exigente de mi rol. Algunas diferencias entre versiones de dependencias, consultas de Esper y estructuras de componentes produjeron errores que no eran evidentes al revisar los módulos de forma aislada. También hubo rutas de imágenes o fuentes que no estaban disponibles en el repositorio. Estos casos interrumpieron la ejecución y requirieron rastrear el origen del problema desde el motor hasta la fábrica o el servicio de recursos correspondiente.
+
+Otra dificultad fue que una configuración presente en JSON no siempre implicaba que la funcionalidad estuviera conectada al ciclo del juego. Por ello, un parámetro o una escena podían existir en el proyecto sin demostrar todavía su comportamiento completo en una partida. Esto hizo evidente la necesidad de contrastar los requisitos con el código ejecutado y no solo con archivos de configuración o documentación.
+
+\subsection{Qué cambiaría en un proyecto futuro}
+
+En un nuevo proyecto fijaría desde el comienzo las versiones de Python y de las dependencias, y comprobaría la instalación desde un entorno limpio. Antes de repartir el trabajo, documentaría los componentes compartidos con sus atributos, unidades, convenciones de coordenadas y ejemplos de consulta de Esper. También definiría interfaces pequeñas para fábricas, sistemas y escenas, de modo que cada integrante pueda desarrollar con base en contratos conocidos.
+
+Planearía integraciones frecuentes desde las primeras etapas, en vez de esperar a que los módulos estén avanzados. Para cada requisito establecería una evidencia verificable en el juego: por ejemplo, una secuencia de entrada, un cambio observable en pantalla o un resultado de partida. Mantendría además una lista de dependencias entre módulos y una matriz de aceptación que vincule requisito, sistema responsable y forma de comprobación. Estas medidas permitirían detectar incompatibilidades antes y reducir el costo de corregirlas.
+
+\section{Evaluación de los aprendizajes}
+
+El proyecto me permitió comprender de manera práctica cómo se relacionan los patrones y conceptos estudiados con la ejecución de un videojuego. El patrón Game Loop define cuándo se reciben entradas, se actualiza el estado y se dibuja cada cuadro. ECS organiza los datos de las entidades y la lógica de los sistemas, lo que facilita procesar de manera común al jugador, enemigos, proyectiles y otros objetos. Aprendí que esta separación solo es útil si los componentes y las consultas tienen contratos consistentes.
+
+También apliqué el patrón Scene para representar pantallas con responsabilidades distintas y administrar sus transiciones desde un único lugar. Command permite traducir entradas en acciones que los sistemas pueden procesar sin que toda entidad consulte directamente el teclado. State ayuda a representar cambios de estado en elementos del juego. Service Locator ofrece un punto común para solicitar recursos como imágenes, sonidos, fuentes y configuración.
+
+En el área matemática y visual, reforcé el uso de vectores, orientación, velocidad y tiempo entre cuadros. La cámara me permitió distinguir la posición real de una entidad en el mundo de su posición proyectada en pantalla. Las hitboxes AABB mostraron por qué la detección de colisiones debe responder a reglas de juego y no depender necesariamente del contorno gráfico. El wraparound, a su vez, requiere tratar los límites como parte de un mundo continuo y coordinarlo con la cámara y la representación visual.
+
+El aprendizaje principal fue que una arquitectura no se valida únicamente por sus diagramas o por la organización de carpetas. Debe sostener una partida completa y permitir que los módulos colaboren sin duplicar responsabilidades. Para aplicar mejor estos conocimientos en futuros proyectos, debo reforzar la validación automatizada de contratos, las pruebas de integración, la gestión reproducible de dependencias y la revisión sistemática de cada requisito funcional.
+
+\section*{Conclusión}
+
+Mi participación se centró en construir y conectar la estructura que permitió ejecutar los distintos módulos bajo un motor común. El proceso fortaleció mi comprensión de ECS, del ciclo principal, de la gestión de escenas y de la cámara, y también mostró que la claridad de los contratos y la integración frecuente son indispensables para convertir una arquitectura planificada en un juego funcional. En futuros proyectos aplicaré estos aprendizajes desde las primeras etapas para detectar problemas antes y verificar cada decisión técnica dentro del producto completo.
+
+\end{document}

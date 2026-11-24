@@ -87,19 +87,17 @@ La implementación cuenta con la base técnica y un conjunto amplio de sistemas 
 
 \chapter{Evolución del desarrollo}
 
-El repositorio registra una evolución incremental: primero se establecieron el motor y la base ECS; posteriormente se incorporaron la compatibilidad con Esper 2, los recursos, la cámara, los controles del jugador, el combate y las configuraciones de niveles. La tabla relaciona el plan de seis semanas con los avances visibles en el código. Dado que el plan utiliza semanas relativas y el historial no asigna cada cambio a una semana específica, las etapas representan la secuencia propuesta y no fechas históricas exactas.
+El proyecto se desarrolló a lo largo de cuatro semanas. La tabla resume la secuencia de trabajo acordada y la relaciona con los avances visibles en el repositorio. Como el historial de Git no registra de manera uniforme la fecha de cada tarea ni permite atribuir todos los cambios a una semana precisa, esta organización presenta los hitos por etapa y no pretende ser un registro diario.
 
 \begin{center}\small
 \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.12\textwidth} >{\raggedright\arraybackslash}p{0.31\textwidth} >{\raggedright\arraybackslash}X@{}}
 \toprule
-\textbf{Etapa} & \textbf{Meta del plan} & \textbf{Avance documentado en el repositorio} \\
+\textbf{Semana} & \textbf{Enfoque de trabajo} & \textbf{Avance documentado en el repositorio} \\
 \midrule
-Semana 1 & Preparar el proyecto, el bucle de juego, Esper, ECS y componentes comunes. & Se establecieron el motor, el mundo Esper, componentes, fábricas, configuración JSON y documentación de contratos. La ventana se configura en 256\,$\times$\,208. \\
-Semana 2 & Obtener un prototipo donde se pueda mover y disparar, con cámara y enemigo inicial. & El código incorpora comandos de teclado, movimiento con aceleración, disparos, cámara, enemigos y colisiones. El historial registra la base ECS y la incorporación de la cámara. \\
-Semana 3 & Añadir combate, bases, torretas, obstáculos, muerte y puntaje. & Hay sistemas de combate, hitboxes, daño, explosiones, bases, torretas, minas, rocas y vidas del jugador. Los archivos de nivel usan entidades de estas categorías. \\
-Semana 4 & Integrar el mundo y la interfaz: cámara, wraparound, estrellas, minimapa, audio y HUD. & El código incorpora cámara, wraparound, campo de estrellas, HUD, minimapa con marcadores de jugador y bases, alertas y configuración de música y efectos. \\
-Semana 5 & Completar diez niveles, escenas y el flujo entre partidas. & El repositorio contiene diez archivos JSON y escenas de título, instrucciones, créditos, pausa, continuación, victoria y derrota. El motor comprueba la destrucción de las bases y avanza de nivel hasta la escena de victoria. \\
-Semana 6 & Corregir, publicar, documentar y preparar la presentación. & El repositorio incluye un README y documentos de arquitectura y configuración. En la versión examinada no se encontró un enlace de publicación, una etiqueta final ni el video de presentación. \\
+1 & Preparación y arquitectura. & Se establecieron el motor, el Game Loop, Esper, componentes y contratos compartidos, fábricas, configuración JSON y la ventana de 256\,$\times$\,208. \\
+2 & Prototipo jugable y mundo. & Se integraron controles, movimiento, disparos, enemigos y colisiones iniciales; también se conectaron cámara, coordenadas de mundo y wraparound. \\
+3 & Sistemas principales y presentación. & Se añadieron combate, bases, torretas, obstáculos, vidas, explosiones, estrellas, HUD, minimapa, audio y alertas. Se estructuraron los datos de los niveles. \\
+4 & Flujo completo e integración. & Se integraron las escenas y transiciones, la progresión de niveles y el flujo de victoria, derrota y continuación. El repositorio contiene diez configuraciones de nivel y documentación. La publicación y algunos detalles de fidelidad aún requieren verificación final. \\
 \bottomrule
 \end{tabularx}
 \end{center}
