@@ -7,9 +7,12 @@
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{tikz}
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{enumitem}
+\usetikzlibrary{arrows.meta,calc,positioning}
 
 \hypersetup{
   colorlinks=true,
@@ -21,6 +24,25 @@
 
 \newcommand{\archivo}[1]{\texttt{\detokenize{#1}}}
 \renewcommand{\arraystretch}{1.2}
+\tikzset{
+  archblock/.style={draw=blue!55!black, rounded corners=2pt, fill=blue!5,
+    align=center, text width=5.0cm, minimum height=0.85cm, inner sep=5pt,
+    font=\small},
+  archdata/.style={draw=teal!60!black, rounded corners=2pt, fill=teal!6,
+    align=center, text width=5.0cm, minimum height=0.85cm, inner sep=5pt,
+    font=\small},
+  archui/.style={draw=orange!70!black, rounded corners=2pt, fill=orange!8,
+    align=center, text width=5.0cm, minimum height=0.85cm, inner sep=5pt,
+    font=\small},
+  archarrow/.style={-{Latex[length=2.2mm]}, thick, draw=black!75},
+  archboth/.style={{Latex[length=2.2mm]}-{Latex[length=2.2mm]}, thick, draw=black!75},
+  scene/.style={draw=purple!60!black, rounded corners=2pt, fill=purple!5,
+    align=center, text width=2.7cm, minimum height=0.8cm, inner sep=4pt,
+    font=\scriptsize},
+  flowbox/.style={draw=blue!55!black, rounded corners=2pt, fill=blue!5,
+    align=center, text width=8.8cm, minimum height=0.7cm, inner sep=4pt,
+    font=\small}
+}
 
 \begin{document}
 \hypersetup{pageanchor=false}
@@ -61,23 +83,21 @@ El proyecto consiste en desarrollar una recreación jugable de \emph{Bosconian},
 
 La arquitectura separa el motor y las escenas de los datos de las entidades y de los sistemas que actualizan el juego. Los niveles y diversos parámetros se leen desde archivos JSON. En la versión examinada existen el jugador, enemigos, bases, torretas, obstáculos, colisiones, cámara, minimapa, escenas de menú y diez configuraciones de nivel. El proyecto incluye, además, recursos gráficos y de audio.
 
-La implementación cuenta con la base técnica y un conjunto amplio de sistemas jugables. En la versión de \archivo{main} examinada, aún deben completarse requisitos obligatorios: activar el avance de ronda al destruir todas las bases, implementar las alertas amarilla y roja, mostrar las bases en el minimapa, persistir el récord y otorgar vidas extra según el puntaje. También debe ajustarse la habilidad especial para que corresponda con la especificación de cuatro proyectiles.
+La implementación cuenta con la base técnica y un conjunto amplio de sistemas jugables. La versión examinada integra el avance entre niveles, escenas de resultado, alertas, marcadores del jugador y las bases en el minimapa, récord y vidas extra. La fidelidad final debe verificarse en una partida completa, en particular la habilidad especial frente al requisito de cuatro proyectiles y la publicación del juego.
 
 \chapter{Evolución del desarrollo}
 
-El repositorio registra una evolución incremental: primero se establecieron el motor y la base ECS; posteriormente se incorporaron la compatibilidad con Esper 2, los recursos, la cámara, los controles del jugador, el combate y las configuraciones de niveles. La tabla relaciona el plan de seis semanas con los avances visibles en el código. Dado que el plan utiliza semanas relativas y el historial no asigna cada cambio a una semana específica, las etapas representan la secuencia propuesta y no fechas históricas exactas.
+El proyecto se desarrolló a lo largo de cuatro semanas. La tabla resume la secuencia de trabajo acordada y la relaciona con los avances visibles en el repositorio. Como el historial de Git no registra de manera uniforme la fecha de cada tarea ni permite atribuir todos los cambios a una semana precisa, esta organización presenta los hitos por etapa y no pretende ser un registro diario.
 
 \begin{center}\small
 \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.12\textwidth} >{\raggedright\arraybackslash}p{0.31\textwidth} >{\raggedright\arraybackslash}X@{}}
 \toprule
-\textbf{Etapa} & \textbf{Meta del plan} & \textbf{Avance documentado en el repositorio} \\
+\textbf{Semana} & \textbf{Enfoque de trabajo} & \textbf{Avance documentado en el repositorio} \\
 \midrule
-Semana 1 & Preparar el proyecto, el bucle de juego, Esper, ECS y componentes comunes. & Se establecieron el motor, el mundo Esper, componentes, fábricas, configuración JSON y documentación de contratos. La ventana se configura en 256\,$\times$\,208. \\
-Semana 2 & Obtener un prototipo donde se pueda mover y disparar, con cámara y enemigo inicial. & El código incorpora comandos de teclado, movimiento con aceleración, disparos, cámara, enemigos y colisiones. El historial registra la base ECS y la incorporación de la cámara. \\
-Semana 3 & Añadir combate, bases, torretas, obstáculos, muerte y puntaje. & Hay sistemas de combate, hitboxes, daño, explosiones, bases, torretas, minas, rocas y vidas del jugador. Los archivos de nivel usan entidades de estas categorías. \\
-Semana 4 & Integrar el mundo y la interfaz: cámara, wraparound, estrellas, minimapa, audio y HUD. & El código incorpora cámara, wraparound, campo de estrellas, HUD, minimapa y configuración de música y efectos. En la versión examinada, el minimapa no representa las bases y el HUD mantiene la alerta verde. \\
-Semana 5 & Completar diez niveles, escenas y el flujo entre partidas. & El repositorio contiene diez archivos JSON y escenas de título, instrucciones, créditos, pausa, continuación, victoria y derrota. En \archivo{main} aún no se activa el avance de ronda después de destruir todas las bases. \\
-Semana 6 & Corregir, publicar, documentar y preparar la presentación. & El repositorio incluye un README y documentos de arquitectura y configuración. En la versión examinada no se encontró un enlace de publicación, una etiqueta final ni el video de presentación. \\
+1 & Preparación y arquitectura. & Se establecieron el motor, el Game Loop, Esper, componentes y contratos compartidos, fábricas, configuración JSON y la ventana de 256\,$\times$\,208. \\
+2 & Prototipo jugable y mundo. & Se integraron controles, movimiento, disparos, enemigos y colisiones iniciales; también se conectaron cámara, coordenadas de mundo y wraparound. \\
+3 & Sistemas principales y presentación. & Se añadieron combate, bases, torretas, obstáculos, vidas, explosiones, estrellas, HUD, minimapa, audio y alertas. Se estructuraron los datos de los niveles. \\
+4 & Flujo completo e integración. & Se integraron las escenas y transiciones, la progresión de niveles y el flujo de victoria, derrota y continuación. El repositorio contiene diez configuraciones de nivel y documentación. La publicación y algunos detalles de fidelidad aún requieren verificación final. \\
 \bottomrule
 \end{tabularx}
 \end{center}
@@ -88,26 +108,74 @@ El historial contiene, entre otros, commits relacionados con la base ECS (\archi
 \chapter{Análisis de arquitectura}
 
 \section{Vista general}
-\begin{center}
-\fbox{\begin{minipage}{0.92\textwidth}
+\begin{figure}[htbp]
 \centering
-\textbf{GameEngine / bucle de juego}\par
-Procesa eventos, calcula \archivo{delta_time}, actualiza y renderiza\par\vspace{0.6em}
-$\downarrow$\par
-\textbf{Administrador de escenas} \quad $\longrightarrow$ \quad \textbf{Escena activa}\par
-Título, juego, pausa, instrucciones, créditos, continuación, victoria o derrota\par\vspace{0.6em}
-$\downarrow$\par
-\textbf{Mundo Esper (ECS)}\par
-Entidades = identificadores \quad Componentes = datos \quad Sistemas = lógica\par
-Fábricas ensamblan jugador, enemigos, bases, torretas, proyectiles y obstáculos\par\vspace{0.6em}
-\textbf{Localizador de servicios} \quad $\longrightarrow$ \quad JSON, imágenes, sonidos y fuentes
-\end{minipage}}
-\end{center}
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[archblock] (loop) at (0,0) {\textbf{GameEngine / Game Loop}\\Eventos, reloj, \archivo{delta_time}, actualización y dibujo};
+  \node[archblock] (manager) at (7,0) {\textbf{SceneManager}\\Despacha eventos, actualización y dibujo};
+  \node[archblock] (active) at (7,-2) {\textbf{Escena activa}\\Título, gameplay, pausa, instrucciones, créditos y resultado};
+  \node[archdata] (world) at (0,-2) {\textbf{Esper World}\\Entidades identificadas por sus componentes};
+  \node[archdata] (factories) at (0,-4) {\textbf{Fábricas y componentes}\\Jugador, enemigos, bases, proyectiles y obstáculos};
+  \node[archdata] (systems) at (7,-4) {\textbf{Sistemas ECS}\\Entrada, movimiento, IA, combate y animación};
+  \node[archui] (render) at (0,-6) {\textbf{Cámara y renderizado}\\Transforman posiciones de mundo al viewport};
+  \node[archui] (hud) at (7,-6) {\textbf{Interfaz fija}\\HUD, minimapa, puntaje, alertas, vidas y ronda};
+  \node[archblock,text width=11.5cm] (services) at (3.5,-8) {\textbf{ServiceLocator}\\Carga configuración JSON, imágenes, sonidos y fuentes};
+  \draw[archarrow] (loop) -- (manager);
+  \draw[archarrow] (manager) -- (active);
+  \draw[archarrow] (active.west) -- (world.east);
+  \draw[archarrow] (factories) -- (world);
+  \draw[archboth] (world.east) -- ++(1.0,0) |- (systems.west);
+  \draw[archarrow] (systems) -- (hud);
+  \draw[archarrow] (world.west) -- ++(-1.2,0) |- (render.west);
+
+\end{tikzpicture}%
+}
+\caption{Relación entre el ciclo principal, las escenas, el mundo ECS, los sistemas y la presentación.}
+\end{figure}
 
 \section{Bucle principal y escenas}
 \archivo{main.py} crea el motor. \archivo{GameEngine.run()} inicializa la escena de título y mantiene un único ciclo que obtiene eventos, calcula el tiempo entre cuadros, actualiza la escena activa, dibuja y presenta cada cuadro. El \archivo{SceneManager} distribuye estas operaciones y aplica los cambios de escena al terminar cada llamada. De este modo, todos los módulos utilizan el mismo ciclo y Pygame permanece activo durante las transiciones.
 
 Las escenas implementan un contrato común para recibir eventos, actualizarse y dibujarse. Esta separación asigna responsabilidades diferenciadas al menú, la partida y las pantallas de resultado. Durante la pausa, la escena de juego deja de ser la escena activa y su actualización queda suspendida.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=0.34cm]
+  \node[flowbox] (events) {Leer eventos de Pygame};
+  \node[flowbox, below=of events] (clock) {Calcular \archivo{delta_time} con el reloj};
+  \node[flowbox, below=of clock] (input) {\archivo{SceneManager.handle_event(event)}};
+  \node[flowbox, below=of input] (update) {\archivo{SceneManager.update(delta_time)}\\La escena activa actualiza mundo y sistemas};
+  \node[flowbox, below=of update] (draw) {\archivo{SceneManager.draw(screen)}\\La escena activa dibuja mundo e interfaz};
+  \node[flowbox, below=of draw] (flip) {\archivo{pygame.display.flip()} y siguiente cuadro};
+  \draw[archarrow] (events) -- (clock);
+  \draw[archarrow] (clock) -- (input);
+  \draw[archarrow] (input) -- (update);
+  \draw[archarrow] (update) -- (draw);
+  \draw[archarrow] (draw) -- (flip);
+  \draw[archarrow] (flip.east) -- ++(1.1,0) |- (events.east);
+\end{tikzpicture}
+\caption{Secuencia de un cuadro dentro del único Game Loop del proyecto.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[scene] (title) at (0,0) {Título};
+  \node[scene] (help) at (5.4,0) {Instrucciones / créditos};
+  \node[scene] (game) at (0,-1.8) {Gameplay};
+  \node[scene] (pause) at (5.4,-1.8) {Pausa};
+  \node[scene] (continue) at (0,-3.8) {Continuar};
+  \node[scene] (end) at (5.4,-3.8) {Victoria / derrota};
+  \draw[archarrow] (title) -- node[above,font=\scriptsize]{opción} (help);
+  \draw[archarrow] (title) -- node[left,font=\scriptsize]{iniciar} (game);
+  \draw[archboth] (game) -- node[above,font=\scriptsize]{P / reanudar} (pause);
+  \draw[archarrow] (game) -- node[left,font=\scriptsize]{0 vidas} (continue);
+  \draw[archarrow] (continue) -- node[above,font=\scriptsize]{5 s} (end);
+  \draw[archarrow] (game.east) -- ++(1.15,0) |- node[pos=0.25,right,font=\scriptsize]{nivel 10} (end.north);
+\end{tikzpicture}
+\caption{Flujo de escenas coordinado por \archivo{SceneManager}; las transiciones conservan el mismo ciclo principal.}
+\end{figure}
 
 \section{ECS y responsabilidades}
 Esper administra las entidades como identificadores y permite consultarlas mediante sus componentes. Las fábricas de \path{src/create/} construyen entidades; los sistemas de \path{src/ecs/systems/} recorren las combinaciones de componentes que necesitan y actualizan el mundo.
@@ -123,6 +191,42 @@ Algunos componentes compartidos son:
 \end{itemize}
 
 La lógica de movimiento recibe \archivo{delta_time}, por lo que la velocidad se integra en función del tiempo y no solo del número de cuadros. El sistema de combate centraliza detección de solapamientos, daño y destrucción de las entidades relevantes. El mundo envuelve posiciones horizontal y verticalmente mediante el sistema de wraparound.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=0.55cm and 0.7cm]
+  \node[archblock,text width=3.2cm] (factory) {Fábricas\\crean ID de entidad};
+  \node[archdata,text width=3.2cm,right=of factory] (world) {\archivo{esper.World}\\almacena asociaciones};
+  \node[archdata,text width=3.5cm,right=of world] (components) {Componentes\\\archivo{CTransform}, \archivo{CVelocity},\\\archivo{CHitBox}, \archivo{CState}, sprite};
+  \node[archblock,text width=3.5cm,below=of world] (systems) {Sistemas\\consulta conjuntos de componentes\\y actualiza entidades};
+  \node[archui,text width=3.5cm,below=of components] (render) {Renderizado\\convierte datos visuales\\en píxeles de pantalla};
+  \draw[archarrow] (factory) -- (world);
+  \draw[archarrow] (world) -- (components);
+  \draw[archboth] (world) -- (systems);
+  \draw[archarrow] (components) -- (systems);
+  \draw[archarrow] (systems) -- (render);
+\end{tikzpicture}
+\caption{Estructura ECS: las fábricas componen entidades con datos y los sistemas procesan las consultas de Esper.}
+\end{figure}
+
+En el ciclo de actualización, el motor llama secuencialmente a sistemas de comandos, movimiento del jugador, disparos, IA, wraparound y combate. Cada sistema consulta los componentes que necesita; por ejemplo, movimiento requiere posición y velocidad, mientras que las colisiones consultan hitboxes. Las entidades no mantienen un bucle de actualización propio.
+
+\section{Cámara y coordenadas de dibujo}
+Las entidades conservan su posición en coordenadas de mundo. La cámara sigue al jugador y el renderizador convierte esas coordenadas al viewport del juego. Los elementos de interfaz se dibujan en coordenadas de pantalla, por lo que permanecen fijos. El campo de estrellas recibe el desplazamiento de la cámara para generar el efecto de paralaje.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=0.7cm and 1.0cm]
+  \node[archdata,text width=3.3cm] (entity) {Entidad\\posición de mundo\\\archivo{CTransform}};
+  \node[archblock,text width=3.3cm,right=of entity] (camera) {Cámara\\seguimiento del jugador\\mundo $\rightarrow$ pantalla};
+  \node[archui,text width=3.6cm,right=of camera] (viewport) {Viewport de juego\\sprites + paralaje de estrellas};
+  \node[archui,text width=3.6cm,below=of viewport] (fixed) {Interfaz fija\\HUD y minimapa\\coordenadas de pantalla};
+  \draw[archarrow] (entity) -- (camera);
+  \draw[archarrow] (camera) -- (viewport);
+  \draw[archarrow] (entity.south) |- node[pos=0.25,below,font=\scriptsize]{posición consultada} (fixed.west);
+\end{tikzpicture}
+\caption{Separación entre las coordenadas del mundo transformadas por la cámara y la interfaz fija.}
+\end{figure}
 
 \section{Patrones y conceptos aplicados}
 \begin{description}[leftmargin=!,labelwidth=3.4cm]
@@ -140,14 +244,14 @@ El proyecto utiliza vectores bidimensionales para representar dirección, veloci
 La respuesta audiovisual combina sprites animados, disparos, sonidos, explosiones, invulnerabilidad temporal, parpadeo durante la reaparición, interfaz y movimiento de estrellas. Estos elementos comunican al jugador los efectos de sus acciones. La fidelidad del ritmo, la dificultad, la apariencia y el comportamiento debe evaluarse mediante sesiones de comparación con el juego de referencia.
 
 \section{Recursos y configuración}
-\archivo{ServiceLocator} localiza y almacena recursos para su reutilización. Los archivos JSON parametrizan el tamaño del mundo, la aparición de enemigos, las bases y los obstáculos. La configuración facilita la ampliación del sistema; sin embargo, cada parámetro requiere un sistema que lo utilice. Por ejemplo, el tiempo de alerta roja está configurado, pero aún no se refleja en un sistema de alertas activo.
+\archivo{ServiceLocator} localiza y almacena recursos para su reutilización. Los archivos JSON parametrizan el tamaño del mundo, la aparición de enemigos, las bases, los obstáculos, las alertas y los diez niveles. La configuración facilita la ampliación del sistema; cada parámetro debe conectarse con el sistema correspondiente y verificarse en ejecución.
 
 \chapter{Evaluación del estado del producto}
 
 La revisión de la rama \archivo{main}, realizada el 23 de noviembre de 2026, permite distinguir las siguientes áreas:
 \begin{itemize}[leftmargin=*]
   \item \textbf{Base implementada:} bucle de juego, ECS, escenas, comandos de teclado, cámara, wraparound, jugador, vidas, enemigos, bases, obstáculos y colisiones.
-  \item \textbf{Implementación parcial:} transición automática por destrucción de bases; minimapa, pendiente de incorporar marcadores de bases; alertas, cuyo HUD solo muestra el estado verde; puntaje, con récord persistente y vidas extra por completar; y habilidad especial, que debe ajustarse para producir los cuatro proyectiles especificados.
+  \item \textbf{Implementación parcial:} algunos detalles de fidelidad y balance, incluida la comprobación de que la habilidad especial produzca los cuatro proyectiles especificados y la validación integrada de los diez niveles.
   \item \textbf{Entrega por completar:} verificar el juego completo de principio a fin, publicar la versión, etiquetar el código final y completar documentos y presentación.
 \end{itemize}
 
@@ -159,7 +263,7 @@ Esta evaluación documenta el estado del repositorio en la fecha indicada. La va
 La separación por módulos permitió desarrollar en paralelo sobre una arquitectura compartida. Los contratos ECS, las fábricas y la configuración JSON establecieron puntos de integración claros. El historial de Git registra avances incrementales en arquitectura, jugador, combate, recursos y niveles. El uso de \archivo{delta_time}, hitboxes independientes y un administrador común de escenas redujo dependencias entre módulos.
 
 \section{Dificultades y aspectos por mejorar}
-La integración requirió coordinar interfaces compartidas: los componentes, las consultas de Esper, las coordenadas, las unidades de velocidad y los contratos de las fábricas deben coincidir entre módulos. En la versión examinada, algunos requisitos configurados aún no se reflejan en el comportamiento del juego; las alertas, el récord, las vidas extra y ciertos marcadores del minimapa son ejemplos de ello. El avance automático entre niveles también debe completarse y verificarse en la rama principal.
+La integración requirió coordinar interfaces compartidas: componentes, consultas de Esper, coordenadas, unidades de velocidad y contratos de fábricas. Algunos problemas solo aparecieron al conectar módulos, aunque cada parte funcionara por separado. La revisión conjunta de alertas, puntaje, minimapa y progresión mostró la importancia de comprobar cada función dentro de una partida completa.
 
 \section{Mejoras para proyectos futuros}
 Como equipo, proponemos definir desde la primera semana los contratos de componentes, las unidades y las convenciones de coordenadas; integrar módulos pequeños de manera frecuente; y convertir cada criterio obligatorio de la rúbrica en una demostración verificable. También resulta conveniente mantener una matriz de trazabilidad entre requisito, archivo o sistema, responsable y estado. De este modo, una opción de configuración se considerará terminada cuando su efecto esté implementado y verificado en el juego.
@@ -205,7 +309,7 @@ El desarrollo permitió aplicar ECS en un programa interactivo y comprender la i
 
 \textbf{Qué fue difícil y qué cambiaría.} El principal reto fue alinear las rutas de recursos, las dimensiones de la fuente pixel (ajustándola a su escala nativa de 8 píxeles para garantizar legibilidad en 256\,$\times$\,208) y las consultas de componentes entre módulos desarrollados en paralelo. En un proyecto futuro acordaría desde el inicio los nombres exactos de rutas y componentes compartidos y realizaría integraciones más frecuentes sobre la rama de desarrollo para evitar desajustes visuales o de balance al final.
 
-\textbf{Qué aprendí.} Aprendí a estructurar la capa de presentación y progresión de un videojuego sobre una arquitectura ECS sin mezclar la lógica de estado con el dibujado en pantalla. Comprendí en la práctica la utilidad de los patrones State, Scene y Service Locator, así como la importancia de validar en ejecución cada parámetro definido en archivos de configuración y de preparar una compilación reproducible para su distribución.\textbf{Aporte y evidencia personal:}\par
+\textbf{Qué aprendí.} Aprendí a estructurar la capa de presentación y progresión de un videojuego sobre una arquitectura ECS sin mezclar la lógica de estado con el dibujado en pantalla. Comprendí en la práctica la utilidad de los patrones State, Scene y Service Locator, así como la importancia de validar en ejecución cada parámetro definido en archivos de configuración y de preparar una compilación reproducible para su distribución.
 
 
 \chapter{Roles y contribuciones del equipo}
