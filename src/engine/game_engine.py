@@ -70,7 +70,14 @@ class GameEngine:
     """Owns Pygame and the single loop shared by every scene."""
 
     def __init__(self) -> None:
-        ServiceLocator.initialize(Path(__file__).resolve().parents[2])
+        import sys
+        if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+            base_dir = Path(sys._MEIPASS)
+        else:
+            base_dir = Path(__file__).resolve().parents[2]
+            if not (base_dir / "assets").exists():
+                base_dir = Path.cwd()
+        ServiceLocator.initialize(base_dir)
         self.window_cfg = ServiceLocator.configs.load("assets/cfg/window.json")
         pygame.init()
         self.audio_config = ServiceLocator.configs.load("assets/cfg/audio.json")
@@ -114,7 +121,11 @@ class GameEngine:
         self.player_entity = None
         self._last_lives = 4
         self._level_transition_started = False
-        save_path = Path(__file__).resolve().parents[2] / "save" / "highscore.json"
+        save_path = (
+            Path("/tmp/highscore.json")
+            if sys.platform == "emscripten"
+            else base_dir / "save" / "highscore.json"
+        )
         self.score_manager = ScoreManager(save_path=save_path)
         self.alert_controller = AlertController()
         self.hud = HUD(panel_width=80)
@@ -135,6 +146,8 @@ class GameEngine:
             for event in self.events:
                 if event.type == pygame.QUIT:
                     self.is_running = False
+                elif event.type == pygame.KEYDOWN and self._handle_debug_hotkey(event.key):
+                    continue
                 else:
                     self.scene_manager.handle_event(event)
             self.scene_manager.update(self.delta_time)
@@ -391,6 +404,45 @@ class GameEngine:
             target.blit(ship, (panel_x + 8 + index * 15, 163))
         label("ROUND", panel_x + 5, 187, white)
         label(f"{self.level:>2}", target.get_width() - 20, 187, white)
+
+
+    def _handle_debug_hotkey(self, key: int) -> bool:
+        """Teclas rápidas de prueba/depuración para evaluar rondas, especial, alertas y puntaje."""
+        if not isinstance(self.scene_manager.current_scene, GameplayScene):
+            return False
+        player = self.current_player()
+        if player is None or player.dead:
+            return False
+
+        if key == pygame.K_F1:
+            self.complete_level()
+            return True
+        if key == pygame.K_F2:
+            from src.ecs.components.c_player_special import CPlayerSpecial
+            special = self.ecs_world.try_component(self.player_entity, CPlayerSpecial)
+            if special is not None:
+                special.config.enabled = True
+                special.uses_left = max(3, special.config.uses_per_level)
+            return True
+        if key == pygame.K_F3:
+            from src.ui.alert_system import GreenAlertState, YellowAlertState, RedAlertState
+            alert = next(iter(self.ecs_world.get_component(CAlert)), None)
+            if alert is not None:
+                _, c_alert = alert
+                if c_alert.level_name == "GREEN":
+                    self.alert_controller.change_state(YellowAlertState(), c_alert)
+                elif c_alert.level_name == "YELLOW":
+                    self.alert_controller.change_state(RedAlertState(), c_alert)
+                else:
+                    self.alert_controller.reset(c_alert, red_threshold=c_alert.red_threshold)
+            return True
+        if key == pygame.K_F4:
+            gained = self.score_manager.set_score(self.score_manager.score + 10000)
+            player.score = self.score_manager.score
+            player.lives = min(self.score_manager.max_lives, player.lives + gained)
+            self.score = player.score
+            return True
+        return False
 
     def pause(self, gameplay_scene):
         self.pause_music()

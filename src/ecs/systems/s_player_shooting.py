@@ -72,6 +72,7 @@ def system_player_special(world: esper.World, delta_time: float) -> None:
         if (
             state.name not in CONTROLLABLE_STATES
             or not intent.special
+            or not special.config.enabled
             or special.uses_left <= 0
             or special.cooldown_remaining > 0
         ):
@@ -83,20 +84,26 @@ def system_player_special(world: esper.World, delta_time: float) -> None:
             range=config.range or weapon.config.range,
         )
         center = ship_center(player, transform)
-        middle = (config.bullet_count - 1) / 2
-        for index in range(config.bullet_count):
+        front_count = max(1, config.bullet_count)
+        middle = (front_count - 1) / 2
+        for index in range(front_count):
             heading = transform.angle + (index - middle) * config.spread_degrees
             create_player_bullet(
                 world, entity, center, heading_to_vector(heading),
                 velocity.vel, shot, kind="special",
             )
+        # Cuarta bala trasera según especificación de Bosconian (3 al frente + 1 atrás)
+        rear_direction = -heading_to_vector(transform.angle)
+        create_player_bullet(
+            world, entity, center, rear_direction,
+            velocity.vel, shot, kind="special",
+        )
         special.uses_left -= 1
         special.cooldown_remaining = config.cooldown
         play_sound(config.sound)
 
 
 def system_player_bullet_bounds(world: esper.World, camera=None) -> None:
-    
     if camera is None:
         return
     for entity, (bullet, transform) in list(
